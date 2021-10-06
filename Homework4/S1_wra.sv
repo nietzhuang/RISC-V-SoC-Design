@@ -69,54 +69,42 @@ module S1_wra(
         HRDATA_S1   = IM_out;
         HREADY_S1   = 1'b1;
         HRESP_S1    = 2'b0;
-        IM_write    = 1'b0;
         IM_enable   = 1'b0;
-        IM_in       = 32'b0;
         IM_address  = HADDR;
       end
       ADDR:begin
         HRDATA_S1   = 32'b0;
         HREADY_S1   = 1'b0;
         HRESP_S1    = 1'b0;
-        IM_write    = 1'b0;
         IM_enable   = 1'b1;
-        IM_in       = 32'b0;
         IM_address  = HADDR;
       end
       WRITE:begin  // IM would never be written.
         HRDATA_S1   = 32'b0;
         HREADY_S1   = 1'b1;
         HRESP_S1    = 1'b0;
-        IM_write    = 1'b0;
         IM_enable   = 1'b1;
-        IM_in       = 32'b0;
         IM_address  = HADDR;
       end
       WAIT_READ:begin // wait for reading the IM_out.
         HRDATA_S1   = IM_out;
         HREADY_S1   = 1'b0;
         HRESP_S1    = 1'b0;
-        IM_write    = 1'b0;
         IM_enable   = 1'b1;
-        IM_in       = 32'b0;
         IM_address  = HADDR; // address to read IM_out.
       end
       READ:begin
         HRDATA_S1   = IM_out;
         HREADY_S1   = 1'b1;
         HRESP_S1    = 1'b0;
-        IM_write    = 1'b0;
         IM_enable   = 1'b1;
-        IM_in       = HWDATA;
         IM_address  = HADDR;
       end
       default:begin
         HRDATA_S1   = 32'b0;
         HREADY_S1   = 1'b1;
         HRESP_S1    = 1'b0;
-        IM_write    = 1'b0;
         IM_enable   = 1'b0;
-        IM_in       = 32'b0;
         IM_address  = 32'b0;
       end
     endcase
