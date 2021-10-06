@@ -62,14 +62,14 @@ module top(
          .clk(clk),
          .rst(rst),
 
-         // from AHB
+         // Inputs from AHB BUS.
          .HGRANT_M1(HGRANT_M1),
          .HGRANT_M2(HGRANT_M2),
          .HRDATA(HRDATA),
          .HREADY(HREADY),
          .HRESP(HRESP),
 
-         // to AHB
+         // Outputs to AHB BUS.
          .HADDR_M1(HADDR_M1),
          .HADDR_M2(HADDR_M2),
          .HBUSREQ_M1(HBUSREQ_M1),
