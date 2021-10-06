@@ -57,8 +57,6 @@ module top(
   logic                             HSEL_S1;
   logic                             HSEL_S2;
 
-  //logic                             IM_write;  //!!
-
 
   CPU CPU0(
          .clk(clk),
@@ -133,7 +131,6 @@ module top(
          .HSEL_S2(HSEL_S2)
          );
 
-
   S1_wra S_wrapper1(
          .clk(clk),
          .rst(rst),
@@ -157,8 +154,6 @@ module top(
          // Outputs to IM.
          .IM_enable(IM_enable),
          .IM_address(IM_address)
-         //.IM_write(IM_write),  //!!! May delete it.
-         //.IM_in(IM_in) //!!! May delete it.
          );
 
   S2_wra S_wrapper2(
@@ -182,10 +177,10 @@ module top(
          .HREADY_S2(HREADY_S2),
          .HRESP_S2(HRESP_S2),
          // Outputs to DM.
-         .DM_write(DM_write),
          .DM_enable(DM_enable),
+         .DM_address(DM_address),
          .DM_in(DM_in),
-         .DM_address(DM_address)
+         .DM_write(DM_write)
          );
 
 endmodule
