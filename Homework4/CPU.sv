@@ -138,8 +138,8 @@ module CPU(
   logic [`data_size-1:0]                    alu_result_EXE_MEM;
   logic [`data_size-1:0]                    alu_result_MEM_WB;
   // Other control signals.
-  logic                                     MEM_ctr;
-  logic                                     MEM_ctr_ID_EXE;
+  logic [2:0]                               MEM_ctr;
+  logic [2:0]                               MEM_ctr_ID_EXE;
   logic [2:0]                               WB_ctr;
   logic [2:0]                               WB_ctr_ID_EXE;
   logic [2:0]                               WB_ctr_EXE_MEM;
@@ -199,12 +199,12 @@ module CPU(
         .flush(flush),
         .flush_jalr(flush_jalr),
 
-        .PC_added_a(PC_added_IF_ID)
+        .PC_added_a(PC_added_IF_ID),
         .instruction(instruction),
         .Read_addr_1(Read_addr_1_IF_ID),
         .Read_addr_2(Read_addr_2_IF_ID),
         .write_addr_IF_ID(write_addr_IF_ID),
-        .imm_in(imm_in),
+        .imm_in(imm_in)
        );
   pipreg_ID_EXE pip_id_exe(
         .clk(clk),
@@ -277,7 +277,6 @@ module CPU(
         .write_addr_EXE_MEM(write_addr_EXE_MEM),
         .alu_result_EXE_MEM(alu_result_EXE_MEM),
         .Dcache_out_ext(Dcache_out_ext),
-        .opcode_MEM(opcode_EXE_MEM),
         .WB_ctr_b(WB_ctr_EXE_MEM),
         .Istall(Istall),
         .Dstall(Dstall),
