@@ -166,14 +166,14 @@ module CPU(
   PC PC0(
         .clk(clk),
         .rst(rst),
-        .PC_in_pdt(PC_in_pred),
-        .opcode_EXE(opcode_ID_EXE),
-        .opcode_MEM(opcode_EXE_MEM),
-        .jump_sel(jump_sel),
-        .taken_sel(taken_sel),
+        .PC_in_pred(PC_in_pred),
+        //.opcode_ID_EXE(opcode_ID_EXE),
+        //.opcode_EXE_MEM(opcode_EXE_MEM),
+        //.jump_sel(jump_sel),
+        //.taken_sel(taken_sel),
         .Istall(Istall),
         .Dstall(Dstall),
-        .hit(hit),
+        //.hit(hit),
 
         .PC_address(PC_address),
         .Icache_en(Icache_en)
