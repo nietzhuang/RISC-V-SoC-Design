@@ -245,29 +245,29 @@ module CPU(
   pipreg_EXE_MEM pip_exe_mem(
         .clk(clk),
         .rst(rst),
-        .PC_added_b(PC_added_ID_EXE),
+        .PC_added_ID_EXE(PC_added_ID_EXE),
         .Read_addr_2_ID_EXE(Read_addr_2_ID_EXE),
         .write_addr_ID_EXE(write_addr_ID_EXE),
         .alu_result(alu_result),
         .Read_data_sw(Read_data_sw),
-        .opcode_EXE(opcode_ID_EXE),
-        .funct3_EXE(funct3_ID_EXE),
-        .MEM_ctr_a(MEM_ctr_ID_EXE),
-        .WB_ctr_a(WB_ctr_ID_EXE),
+        .opcode_ID_EXE(opcode_ID_EXE),
+        .funct3_ID_EXE(funct3_ID_EXE),
+        .MEM_ctr_ID_EXE(MEM_ctr_ID_EXE),
+        .WB_ctr_ID_EXE(WB_ctr_ID_EXE),
         .Istall(Istall),
         .Dstall(Dstall),
 
-        .PC_added_c(PC_added_EXE_MEM),
+        .PC_added_EXE_MEM(PC_added_EXE_MEM),
         .Read_addr_2_EXE_MEM(Read_addr_2_EXE_MEM),
         .write_addr_EXE_MEM(write_addr_EXE_MEM),
         .alu_result_EXE_MEM(alu_result_EXE_MEM),
         .D_address(D_address),
-        .Read_data_2_MEM(Read_data_2_EXE_MEM),
-        .opcode_MEM(opcode_EXE_MEM),
-        .funct3_MEM(funct3_EXE_MEM),
+        .Read_data_2_EXE_MEM(Read_data_2_EXE_MEM),
+        .opcode_EXE_MEM(opcode_EXE_MEM),
+        .funct3_EXE_MEM(funct3_EXE_MEM),
         .Dcache_en(Dcache_en),
         .Dcache_write(Dcache_write),
-        .WB_ctr_b(WB_ctr_EXE_MEM)
+        .WB_ctr_EXE_MEM(WB_ctr_EXE_MEM)
         );
 
   pipreg_MEM_WB pip_mem_wb(
