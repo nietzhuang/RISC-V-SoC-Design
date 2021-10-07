@@ -181,7 +181,7 @@ module CPU(
 
   PC_adder PC_adder(
         .PC_address(PC_address),
-        .PC_added_b(PC_added_ID_EXE),
+        .PC_added_ID_EXE(PC_added_ID_EXE),
         .imm_EXE(imm_ID_EXE),
 
         .PC_in(PC_in),
@@ -199,26 +199,26 @@ module CPU(
         .flush(flush),
         .flush_jalr(flush_jalr),
 
-        .PC_added_a(PC_added_IF_ID),
+        .PC_added_IF_ID(PC_added_IF_ID),
         .instruction(instruction),
-        .Read_addr_1(Read_addr_1_IF_ID),
-        .Read_addr_2(Read_addr_2_IF_ID),
+        .Read_addr_1_IF_ID(Read_addr_1_IF_ID),
+        .Read_addr_2_IF_ID(Read_addr_2_IF_ID),
         .write_addr_IF_ID(write_addr_IF_ID),
         .imm_in(imm_in)
        );
   pipreg_ID_EXE pip_id_exe(
         .clk(clk),
         .rst(rst),
-        .PC_added_a(PC_added_IF_ID),
+        .PC_added_IF_ID(PC_added_IF_ID),
         .instruction(instruction),
-        .Read_addr_1(Read_addr_1_IF_ID),
-        .Read_addr_2(Read_addr_2_IF_ID),
+        .Read_addr_1_IF_ID(Read_addr_1_IF_ID),
+        .Read_addr_2_IF_ID(Read_addr_2_IF_ID),
         .write_addr_IF_ID(write_addr_IF_ID),
         .imm(imm),
         .WB_ctr(WB_ctr),
         .MEM_ctr(MEM_ctr),
         .imm_select(imm_select),
-        .alu_en(alu_en_IF_ID),
+        .alu_en_IF_ID(alu_en_IF_ID),
         .utype_sel(utype_sel),
         .asipc_sel(asipc_sel),
         .Istall(Istall),
@@ -226,20 +226,20 @@ module CPU(
         .flush(flush),
         .flush_jalr(flush_jalr),
 
-        .PC_added_b(PC_added_ID_EXE),
-        .opcode_EXE(opcode_ID_EXE),
-        .funct3_EXE(funct3_ID_EXE),
+        .PC_added_ID_EXE(PC_added_ID_EXE),
+        .opcode_ID_EXE(opcode_ID_EXE),
+        .funct3_ID_EXE(funct3_ID_EXE),
         .funct7(funct7),
         .Read_addr_1_ID_EXE(Read_addr_1_ID_EXE),
         .Read_addr_2_ID_EXE(Read_addr_2_ID_EXE),
         .write_addr_ID_EXE(write_addr_ID_EXE),
-        .imm_EXE(imm_ID_EXE),
-        .WB_ctr_a(WB_ctr_ID_EXE),
-        .MEM_ctr_a(MEM_ctr_ID_EXE),
-        .imm_select_a(imm_select_ID_EXE),
-        .alu_en_a(alu_en_ID_EXE),
-        .utype_sel_a(utype_sel_ID_EXE),
-        .asipc_sel_EXE(asipc_sel_ID_EXE)
+        .imm_ID_EXE(imm_ID_EXE),
+        .WB_ctr_ID_EXE(WB_ctr_ID_EXE),
+        .MEM_ctr_ID_EXE(MEM_ctr_ID_EXE),
+        .imm_select_ID_EXE(imm_select_ID_EXE),
+        .alu_en_ID_EXE(alu_en_ID_EXE),
+        .utype_sel_ID_EXE(utype_sel_ID_EXE),
+        .asipc_sel_ID_EXE(asipc_sel_ID_EXE)
         );
 
   pipreg_EXE_MEM pip_exe_mem(

@@ -5,8 +5,8 @@ module PC_adder(
   input         [`data_size-1:0]        PC_added_ID_EXE,
   input         [`data_size-1:0]        imm_EXE,
 
-  output logic  [`data_size-1:0]        PC_in
-  output logic  [`data_size-1:0]        PC_jump,
+  output logic  [`data_size-1:0]        PC_in,
+  output logic  [`data_size-1:0]        PC_jump
 );
 
   always_comb begin
