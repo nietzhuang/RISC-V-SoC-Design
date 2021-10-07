@@ -8,6 +8,6 @@ module mux_jal(
   output logic  [`data_size-1:0]        y
 );
 
-  assgin y  = (!select)? a : b;
+  assign y  = (!select)? a : b;
 
 endmodule
