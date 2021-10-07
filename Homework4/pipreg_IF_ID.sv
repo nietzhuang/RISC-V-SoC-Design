@@ -26,13 +26,13 @@ module pipreg_IF_ID(
   assign flag_stall  = Istall || Dstall;
   assign flag_flush  = flush || flush_jalr;
 
-  always_ff@(posedge clk)begin
+  always_ff@(posedge clk, posedge rst)begin
     if(rst||address_rst)begin
       PC_added_IF_ID        <= 32'b0;
       instruction           <= 32'd0;
       Read_addr_1_IF_ID     <= 5'd0;
       Read_addr_2_IF_ID     <= 5'd0;
-      write_addr_IF_ID      <=  5'b0;
+      write_addr_IF_ID      <= 5'b0;
       imm_in                <= 32'b0;
     end
     else if(!flag_stall) begin
