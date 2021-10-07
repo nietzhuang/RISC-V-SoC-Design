@@ -1,6 +1,5 @@
 `include "define.sv"
 
-//MEM/WB
 module pipreg_MEM_WB(
   input                                 clk,
   input                                 rst,
