@@ -20,7 +20,7 @@ module pipreg_ID_EXE(
     input                                   flush,
     input                                   flush_jalr,
 
-    output logic    [`data_size-1:0]        PC_added_ID_EXE
+    output logic    [`data_size-1:0]        PC_added_ID_EXE,
     output logic    [6:0]                   opcode_ID_EXE,
     output logic    [2:0]                   funct3_ID_EXE,
     output logic    [6:0]                   funct7,
@@ -33,7 +33,7 @@ module pipreg_ID_EXE(
     output logic                            imm_select_ID_EXE,
     output logic                            alu_en_ID_EXE,
     output logic                            utype_sel_ID_EXE,
-    output logic                            asipc_sel_ID_EXE,
+    output logic                            asipc_sel_ID_EXE
 );
 
   logic                                     flag_stall;
@@ -55,7 +55,7 @@ module pipreg_ID_EXE(
       imm_ID_EXE                            <= 32'b0;
       WB_ctr_ID_EXE                         <= 3'b0;
       MEM_ctr_ID_EXE                        <= 3'b0;
-      {imm_select_ID_ExE, alu_en_ID_EXE}    <= 2'b0;
+      {imm_select_ID_EXE, alu_en_ID_EXE}    <= 2'b0;
       utype_sel_ID_EXE                      <= 1'b0;
       asipc_sel_ID_EXE                      <= 1'b0;
     end
@@ -90,7 +90,7 @@ module pipreg_ID_EXE(
         utype_sel_ID_EXE                    <= 1'b0;
         asipc_sel_ID_EXE                    <= 1'b0;
       end
-
     end
   end
+
 endmodule
