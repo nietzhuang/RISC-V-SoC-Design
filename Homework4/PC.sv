@@ -22,7 +22,7 @@ module PC(
       Icache_en <= 1'b0;
     end
     else if(!(Istall||Dstall))begin
-        PC_address <= PC_in_pdt;
+        PC_address <= PC_in_pred;
         Icache_en <= 1'b1;
     end
     else
