@@ -273,19 +273,19 @@ module CPU(
   pipreg_MEM_WB pip_mem_wb(
         .clk(clk),
         .rst(rst),
-        .PC_added_c(PC_added_EXE_MEM),
+        .PC_added_EXE_MEM(PC_added_EXE_MEM),
         .write_addr_EXE_MEM(write_addr_EXE_MEM),
         .alu_result_EXE_MEM(alu_result_EXE_MEM),
         .Dcache_out_ext(Dcache_out_ext),
-        .WB_ctr_b(WB_ctr_EXE_MEM),
+        .WB_ctr_EXE_MEM(WB_ctr_EXE_MEM),
         .Istall(Istall),
         .Dstall(Dstall),
 
-        .PC_added_d(PC_added_MEM_WB),
+        .PC_added_MEM_WB(PC_added_MEM_WB),
         .write_addr(write_addr),
         .RF_write(RF_write),
         .alu_result_MEM_WB(alu_result_MEM_WB),
-        .Dcache_out_WB(Dcache_out_MEM_WB),
+        .Dcache_out_MEM_WB(Dcache_out_MEM_WB),
         .lw_select(lw_select),
         .jal_sel(jal_sel)
         );
