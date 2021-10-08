@@ -512,20 +512,20 @@ module CPU(
   Dcache Dcache(
         .clk(clk),
         .rst(rst),
-        .address(D_address), // wire to alu_result
+        .address(D_address),  // wire to alu_result
         .Dcache_en(Dcache_en),
         .Dcache_write(Dcache_write),
         .Dcache_in(Dcache_in),
         .ready(ready),
-        .DM_out(DM_out),  //!! DataIn
-        .funct3_MEM(funct3_EXE_MEM),
+        .DataIn(DM_out),
+        .funct3_EXE_MEM(funct3_EXE_MEM),
 
         .DM_address(DM_address),
         .DM_enable(DM_enable),
-        .data(Dcache_out),  //!!  DataOut
+        .DataOut(Dcache_out),
         .DM_write(DM_write),
         .Dstall(Dstall),
-        .stall_Dcount(stall_Dcount) // to Icache
+        .stall_Dcount(stall_Dcount)  // to Icache
         );
 
   M_wra M_wrapper0(
