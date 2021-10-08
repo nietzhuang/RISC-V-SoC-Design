@@ -484,7 +484,7 @@ module CPU(
         .PC_jump_jalr(PC_jump_jalr),
         .flush_jalr(flush_jalr)
         );
-        
+
   mux_asipc mux_asipc(
         .PC_added_ID_EXE(PC_added_ID_EXE),
         .Read_data_1(Read_data_1),
@@ -499,11 +499,11 @@ module CPU(
         .Icache_en(Icache_en),
         .ready(ready),  // from Master wrapper.
         .stall_Dcount(stall_Dcount),
-        .IM_out(IM_out),  //!!! DataIn
+        .DataIn(IM_out),
 
         .IM_enable(IM_enable),
         .IM_address(IM_address),
-        .data(Icache_out),  //!!! DataOut
+        .DataOut(Icache_out),
         .Istall(Istall),  // stall by icache
         .hit(hit),
         .address_rst(address_rst)
