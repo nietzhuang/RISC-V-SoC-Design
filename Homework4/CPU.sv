@@ -447,8 +447,8 @@ module CPU(
         .Istall(Istall),
         .Dstall(Dstall),
 
-        .PC_imm_que(PC_imm_que),
-        .PC_imm(PC_imm)
+        .PC_imm(PC_imm),
+        .PC_imm_que(PC_imm_que)
         );
 
   predict pred(
