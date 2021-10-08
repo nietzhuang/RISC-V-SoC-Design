@@ -11,7 +11,7 @@ module mux_rs(
 );
 
   always_comb begin
-    case(rs_sel)
+    unique case(rs_sel)
       2'b00: src1 = Read_data_1_EXE;
       2'b01: src1 = alu_result_EXE_MEM;
       2'b10: src1 = write_data;
