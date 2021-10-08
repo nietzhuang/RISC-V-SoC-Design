@@ -9,9 +9,9 @@ module Icache(
   input                                 Icache_en,
   input                                 ready,
   input                                 stall_Dcount,
-  input         [`data_size-1:0]        IM_out,
+  input         [`data_size-1:0]        DataIn,
 
-  output logic  [`data_size-1:0]        data,
+  output logic  [`data_size-1:0]        DataOut,
   output logic                          IM_enable,
   output logic  [`data_size-1:0]        IM_address,
   output logic                          Istall,
@@ -53,7 +53,7 @@ module Icache(
         .CK(clk),
         .A(address[9:4]),
         .DO(DO[0]),
-        .DI(IM_out),
+        .DI(DataIn),
         .WEB(WEB_data),
         .OE(OE_data),
         .CS(CS_data[0])
@@ -63,7 +63,7 @@ module Icache(
         .CK(clk),
         .A(address[9:4]),
         .DO(DO[1]),
-        .DI(IM_out),
+        .DI(DataIn),
         .WEB(WEB_data),
         .OE(OE_data),
         .CS(CS_data[1])
@@ -73,7 +73,7 @@ module Icache(
         .CK(clk),
         .A(address[9:4]),
         .DO(DO[2]),
-        .DI(IM_out),
+        .DI(DataIn),
         .WEB(WEB_data),
         .OE(OE_data),
         .CS(CS_data[2])
@@ -83,7 +83,7 @@ module Icache(
         .CK(clk),
         .A(address[9:4]),
         .DO(DO[3]),
-        .DI(IM_out),
+        .DI(DataIn),
         .WEB(WEB_data),
         .OE(OE_data),
         .CS(CS_data[3])
@@ -96,7 +96,7 @@ module Icache(
         .DO_3(DO[3]),
         .DO_sel(address[3:2]),
 
-        .data(data)
+        .data(DataOut)
         );
 
   I_comparator I_comp(
