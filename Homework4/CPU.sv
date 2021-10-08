@@ -484,11 +484,12 @@ module CPU(
         .PC_jump_jalr(PC_jump_jalr),
         .flush_jalr(flush_jalr)
         );
+        
   mux_asipc mux_asipc(
-        .PC_added_ID(PC_added_ID_EXE),
+        .PC_added_ID_EXE(PC_added_ID_EXE),
         .Read_data_1(Read_data_1),
         .asipc_sel(asipc_sel_ID_EXE),
-        .Read_data_1_EXE(Read_data_1_EXE_MEM)
+        .Read_data_1_EXE_MEM(Read_data_1_EXE_MEM)
         );
 
   Icache Icache(
