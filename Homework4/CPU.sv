@@ -479,7 +479,7 @@ module CPU(
   mux_jalr mux_jalr(
         .PC_jump(PC_jump),
         .alu_result(alu_result),
-        .opcode_EXE(opcode_ID_EXE),
+        .opcode_ID_EXE(opcode_ID_EXE),
 
         .PC_jump_jalr(PC_jump_jalr),
         .flush_jalr(flush_jalr)
