@@ -454,7 +454,7 @@ module CPU(
   predict pred(
         .clk(clk),
         .rst(rst),
-        .opcode_EXE(opcode_ID_EXE),
+        .opcode_ID_EXE(opcode_ID_EXE),
         .jump_sel(jump_sel),
         .Istall(Istall),
         .Dstall(Dstall),
