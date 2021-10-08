@@ -1,0 +1,72 @@
+200003B7 //lui  x7  0x20000
+00438413 //addi x8 x7 0x4  
+001B8B93 //addi x23 x23 0x1
+00420213 //addi x4 x0 0x4
+31F38613 //addi x12 x7  0x3116
+31F60613 //addi x12 x12  0x3116
+31F60613 //addi x12 x12  0x3116
+31F60613 //addi x12 x12  0x3116
+30000793 //addi x15 x15 0x768
+00080813 //addi x16 x16 0x0
+000C8C93 //addi x25 x25 0x0
+00000D13 //addi x26 x0 0x0
+61FD0D93 //addi x27 x26 0x1547  x27=6188
+61FD8D93 //addi x27 x26 0x1547  x27=6188
+61FD8D93 //addi x27 x26 0x1547  x27=6188
+61FD8D93 //addi x27 x26 0x1547  x27=6188
+623D0E13 //addi x28 x26 0x1551  x28=6204
+623E0E13 //addi x28 x26 0x1551  x28=6204
+623E0E13 //addi x28 x26 0x1551  x28=6204
+623E0E13 //addi x28 x26 0x1551  x28=6204
+620D0E93 //addi x29  x26 0x1548 x29 =6192
+620E8E93 //addi x29  x26 0x1548 x29 =6192
+620E8E93 //addi x29  x26 0x1548 x29 =6192
+620E8E93 //addi x29  x26 0x1548 x29 =6192
+624D0F13 //addi x30  x26 0x1552 x30 =6208
+624F0F13 //addi x30  x26 0x1552 x30 =6208
+624F0F13 //addi x30  x26 0x1552 x30 =6208
+624F0F13 //addi x30  x26 0x1552 x30 =6208
+0193A023 //sw   x25 0(x7)
+01B38533 //LOOP: lui x10 0x26188 // add x10 x7 x27
+01C385B3 //lui x11 0x26204       // add x11 x7 x28
+00180813 //addi x16 x16 0x1
+00440413 //addi x8  x8  0x4
+00460613 //addi x12 x12 0x4
+00042083 //lw   x1  0(x8) 
+00062703 //lw   x14 0(x12)
+00450513 //addi x10 x10 0x4
+00458593 //addi x11 x11 0x4
+00150023 //sb   x1  0(x10) 
+00E58023 //sb   x14 0(x11)
+00000113 //addi x2  x0  0x0
+00300193 //addi x3  x0  0x3
+00110113 //COUNT1: addi x2  x2 0x1
+0080D093 //srli x1  x1  0x2
+00875713 //srli x14 x14 0x2
+00450513 //addi x10 x10 0x4
+00458593 //addi x11 x11 0x4
+00150023 //sb   x1  0(x10)
+00E58023 //sb   x14 0(x11)
+FE2192E3 //bne  x3  x2  COUNT1
+00000C13 //addi x24 x24 0x0 
+01D382B3 //lui x5 0x26192       // add x5 x7 x29
+01E38333 //lui x6 0x26208       // add x6 x7 x30
+00028983 //count lb   x19 0(x5)
+00030A03 //lb   x20 0(x6)
+00428293 //addi x5 x5 0x4
+00430313 //addi x6 x6 0x4
+001C0C13 //addi x24 x24 0x1
+41498AB3 //sub  x21 x19 x20
+000AAB33 //slt  x22 x21 x0
+016B9463 //bne  x23 x22 BT0
+41500AB3 //sub  x21 x0  x21 
+0003AC83 //BT0: lw  x25 0(x7)
+019A8AB3 //add  x21 x25 x21 
+0153A023 //sw   x21 0(x7) 
+FC4C18E3 //bne  x24 x4 COUNT
+F6F816E3 //bne  x16 x15 LOOP
+20040FB7 //finish:	lui	x31, 0x20040
+FFCF8F93 //addi	x31, x31, -4
+FFFFFF37 //lui	x30, 0xfffff
+01EFA023 //sw	x30, 0 (x31)
+FF1FF06F //j	finish

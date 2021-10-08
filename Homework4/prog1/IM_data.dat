@@ -1,0 +1,57 @@
+200003B7 // lui	x7, 0x20000//lui
+07708093 // addi x1, x1, 0x77     #x1=119
+00108113 // addi x2, x2, 0x1      #x2=120
+00111193 // slli x3, x2, 0x1      #x3=240
+40118233 // sub x4, x3, x1        #x4=121
+00927293 // andi x5, x4, 0x9      #x5=9
+07F2F313 // andi x6, x5, 0x7F        #x6=9
+00528463 // beq x5, x5, a1        
+00928493 // addi x5, x5, 0x9      
+00102023 // a1: sw x1, 0x0(x0)        
+00002403 // lw x8, 0x0 (x0)
+000014B7 // lui x9, 0x1  #x9=4096
+00108663 // 00108C63 // loop: beq x1, x1, counter
+00158593 // addi x11, x11, 0x1 
+00158593 // addi x11, x11, 0x1   #x11 = 16
+00150513 // counter: addi x10, x10, 0x1 
+FE5518E3 // bne x10, x5 ,loop  x10 = 9  // 7F2A88E3
+00F5E613 // ori x12, x11, 0x0F  #x12=31
+005646B3 // xor x13, x12, x5        #x13=22
+00270713 // addi x14, x14, 0x02    #14 = 2
+00E697B3 // sll x15, x13, x14    #15 = 88
+0017D813 // srli x16, x15, 0x1    #16 = 44
+0000A883 // lw x17, 0x0(x1)    #17 = 44
+0013A223 // sw x1, 4(x7), DM[1] = 119
+0023A423 // sw x2, 8(x7), DM[2] = 120
+0033A623 // sw x3, 12(x7), DM[3] = 240
+0043A823 // sw x4, 16(x7), DM[4] = 121
+0053AA23 // sw x5, 20(x7), DM[5] = 9
+0020B333 // SLTU x6, x1, x2  #x6 = 1
+00317663 // BGEU x2, x3,  comp
+00316463 // BLTU x2, x3,  comp  (taken)
+4001D193 // back: SRAI x3, x3, 0x1 
+406153B3 // comp: SRA x7, x2, x6 // x7 = 240
+0071D263 // BGE x3, x7, back (taken first)
+20000417 // auipc x8, 0x20000
+0060D433 // branch0: srl x8, x1, ,x6  
+FE80CEE3 // blt x8, x1 branch0   //FE80C8E3
+00234413 // xori x8, x6, 0x2  #x8 = 0
+0040056F // jal x10, 0x4   // 456F
+200003B7 // lui	x7, 0x20000//lui
+0063AC23 // sw x6, 24(x7), DM[6] = 1
+0073AE23 // sw x7, 28(x7), DM[7] = 0x2000000
+0283A023 // sw x8, 32(x7), DM[8] = 3
+00243493 // sltiu x9, x8, 0x10  #x9 = 0
+003004E7 // jalr x9, x0,0x3 
+41178933 // sub x18, x15, x17   #18 = 44
+00335993 // srli x19, x6, 0x3   #19 = 1
+00438A03 // lb x20, x7, 0x4,  x20 = 119 = 77h
+00439A83 // lh x21, x7, 0x4, x21 = 79h = 119
+0083CB03 // lbu x22, x7, 0x4,  x22 = 119
+03438223 // sb x7, x20, 0x36, DM[9] = 0
+03539423 // sh x7, x21, 0x40, DM[10] = 121
+20040FB7 // finish:	lui	x31, 0x20040
+FFCF8F93 // 	addi	x31, x31, -4
+FFFFFF37 // 	lui	x30, 0xfffff
+01EFA023 // 	sw	x30, 0 (x31)
+FF1FF06F //   j	finish

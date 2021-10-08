@@ -1,0 +1,92 @@
+200000b7// 	lui	x1, 0x20000 
+20000237// 	lui	x4, 0x20000
+200002B7// 	lui	x5, 0x20000
+0000A103// 	lw	x2, 0x(x1)
+000101B3// 	add	x3, x2, x0
+00010633// 	add	x12, x12, x0
+FFF18193// 	addi x3, x3, x(-1)
+FFF60613// 	addi x12, x12, x(-1)
+00428293// 	addi x5, x5, 0x4
+00420213// 	unsigned1: addi x4, x4, 0x4
+000601B3// 	add x3, x12, 0x0
+000202B3// 	add x5, x4, 0x0
+FFF60613// 	addi x12, x12, 0x(-1)
+00428293// 	unsigned2: addi x5, x5, 0x4
+FFF18193// 	addi x3, x3, 0x(-1)
+00022303// 	lw   x6, 0x4
+0002A383//  lw   x7, 0x5
+00733433//  sltu x8, x6, x7
+00041463//  bne  x8, x0, uloop1
+00040C63//  beq  x8, x0, uloop2
+00622023//  uloop1: sw x6, 0(x4)
+0072A023//  sw x7, 0(x5)
+FC019EE3//  bne  x3, x0, unsigned1
+FC0614E3//  bne  x12, x0,unsigned2
+01400F6F//  jal, s
+00722023//  uloop2: sw x7, 0(x4)
+0062A023//  sw x6, 0(x5)
+FC0194E3//  bne  x3, x0, unsigned2
+FA061AE3//  bne  x12, x0,unsigned1
+00211693//  s: slli x13, x2, 2
+20000237// 	lui	x4, 0x20000
+200002B7// 	lui	x5, 0x20000
+00010633// 	add	x12, x2, x0
+FFF60613// 	addi x12, x12, 0x(-1)
+00D20733//  add	x14, x14, x13
+00420213//  signed1: addi x4, x4, 0x4
+00470713//  addi x14, x14, 0x4
+000601B3//  add	x3, x12, x0
+000202B3//  add	x5, x4, x0
+000707B3//  add	x15, x14, x0
+FFF60613//  addi x12, x12, 0x(-1)
+00428293//  signed2: addi x5, x5, 0x4
+00478793//  addi x15, x15, 0x4
+FFF18193//  addi x3, x3, 0x(-1)
+00022303//  lw x6, 0x4
+0002A383//  lw x7, 0x5
+00733433//  slt x8, x6, x7
+00041463//  bne x8, x0, loop1
+00040C63//  beq x8, x0, loop2
+00672023//  loop1: sw x6, 0x14
+0077A023//  sw x7, 0x15
+FC019CE3//  bne x3, x0, signed2
+FA061EE3//  bne x12, x0, signed1
+01400F6F//  jal, finish
+00772023//  loop2: sw x7, 0x14
+0067A023//  sw x6, 0x15
+FC0192E3//  bne x3, x0, signed2
+FA0614E3//  bne x12, x0, signed1
+00211693//  jal, finish
+20000237
+200002B7
+00010633
+FFF60613
+00D20733
+00420213
+00470713
+000601B3
+000202B3
+000707B3
+FFF60613
+00428293
+00478793
+FFF18193
+00072303
+0007A383
+00732433
+00041463
+00040C63
+00672023
+0077A023
+FC019CE3
+FA061EE3
+01400F6F
+00772023
+0067A023
+FC0192E3
+FA0614E3
+20040FB7 // finish:	lui	x31, 0x20040
+FFCF8F93 // 	addi	x31, x31, -4
+FFFFFF37 // 	lui	x30, 0xfffff
+01EFA023 // 	sw	x30, 0 (x31)
+FF1FF06F //   j	finish
