@@ -22,7 +22,7 @@
 `include "mux_D_in.sv"
 `include "queue.sv"
 `include "predict.sv"
-`include "mux_pdt.sv"
+`include "mux_pred.sv"
 `include "mux_jalr.sv"
 `include "mux_asipc.sv"
 `include "load_extension.sv"
@@ -461,18 +461,18 @@ module CPU(
         .taken_sel(taken_sel)
         );
 
-  mux_pdt mux_pred(
+  mux_pred mux_pred(
         .PC_in(PC_in),
         .PC_imm_que(PC_imm_que),
         .PC_imm(PC_imm),
-        .opcode_EXE(opcode_ID_EXE),
+        .opcode_ID_EXE(opcode_ID_EXE),
         .opcode_IF(Icache_out[6:0]),
         .taken_sel(taken_sel),
         .jump_sel(jump_sel),
         .Istall(Istall),
         .Dstall(Dstall),
 
-        .PC_in_pdt(PC_in_pred),
+        .PC_in_pred(PC_in_pred),
         .flush(flush)
         );
 
