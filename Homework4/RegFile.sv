@@ -36,16 +36,17 @@ module RegFile(
       if(RF_en && (!flag_stall))begin
         if(RF_write && (!flag_stall) && (write_addr != 0))
           mem[write_addr] <= write_data;
+
         if(RF_read && (!flag_stall))begin
           Read_data_1 <= mem[Read_addr_1];
           Read_data_2 <= mem[Read_addr_2];
         end
-      end
-      else begin
-        if(RF_write && (Read_addr_1 == write_addr) && (Read_addr_1 != 0) && (write_addr != 0) && (!(Istall||Dstall)))
+
+        if(RF_write && (Read_addr_1 == write_addr) && (Read_addr_1 != 0) && (write_addr != 0) && (!flag_stall)
           Read_data_1 <= write_data;
-        if(RF_write && (Read_addr_2 == write_addr) && (Read_addr_2 != 0) && (write_addr != 0) && (!(Istall||Dstall)))
+        if(RF_write && (Read_addr_2 == write_addr) && (Read_addr_2 != 0) && (write_addr != 0) && (!flag_stall))
           Read_data_2 <= write_data;
+
       end
     end
   end
