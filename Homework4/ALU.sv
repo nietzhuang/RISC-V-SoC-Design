@@ -1,6 +1,5 @@
 `include "define.sv"
 
-
 module ALU(
   input         [`data_size-1:0]        src1,
   input         [`data_size-1:0]        src2,
@@ -14,7 +13,7 @@ module ALU(
   output logic                          jump_sel
 );
 
-  logic     [`data_size-1:0]            temp;
+  logic     [63:0]            temp;
   logic                                 alu_zero;
 
   assign jump_sel = branch & alu_zero;
@@ -38,17 +37,17 @@ module ALU(
             end
             `SLT:begin
               if(src1[31] > src2[31])begin
-                alu_result = `data_size-1'b1;
+                alu_result = `data_size'b1;
                 alu_zero = 1'b0;
                 temp = 64'd0;
               end
               else if(src1[31] < src2[31])begin
-                alu_result = `data_size-1'b0;
+                alu_result = `data_size'b0;
                 alu_zero = 1'b0;
                 temp = 64'd0;
               end
               else begin
-                alu_result = (src1[30:0] < src2[30:0])? `data_size-1'b1 : `data_size-1'b0;
+                alu_result = (src1[30:0] < src2[30:0])? `data_size'b1 : `data_size'b0;
                 alu_zero = 1'b0;
                 temp = 64'd0;
               end
@@ -65,7 +64,7 @@ module ALU(
             end
             `SRL:begin
               if(funct7 == 7'b010_0000)begin  // SRA
-                temp = {{(`data_size-1){src1[31]}}, src1};
+                temp = {{(`data_size){src1[31]}}, src1};
                 temp = temp >> src2[4:0];
                 alu_result = temp[31:0];
                 alu_zero = 1'b0;
@@ -142,50 +141,50 @@ module ALU(
                 //!! has the potential to reduece area.
                 // notice the sign bit.
                 if (src1[31] < src2[31])begin
-                  alu_result = `data_size-1'b0;  // dont care
+                  alu_result = `data_size'b0;  // dont care
                   alu_zero = 1'b0;  // larger than, so don't branch
                   temp = 64'd0;
                 end
                 else if(src1[31] > src2[31])begin
-                  alu_result = `data_size-1'b0;
+                  alu_result = `data_size'b0;
                   alu_zero = 1'b1;  // less than, so branch
                   temp = 64'd0;
                 end
                 else begin
-                  alu_result = `data_size-1'b0;  // don't care
+                  alu_result = `data_size'b0;  // don't care
                   alu_zero = (src1[30:0] < src2[30:0]);
                   temp = 64'd0;
                 end
               end
               3'b101:begin  // BGE
                 if (src1[31] < src2[31])begin
-                  alu_result = `data_size-1'b0;
+                  alu_result = `data_size'b0;
                   alu_zero = 1'b1;  // larger than, so branch
                   temp = 64'd0;
                 end
                 else if(src1[31] > src2[31])begin
-                  alu_result = `data_size-1'b0;
+                  alu_result = `data_size'b0;
                   alu_zero = 1'b0;  // less than, so don't branch
                   temp = 64'd0;
                 end
                 else begin
-                  alu_result = `data_size-1'b0;
+                  alu_result = `data_size'b0;
                   alu_zero = ((src1[30:0] > src2[30:0]) || (src1 == src2));
                   temp = 64'd0;
                 end
               end
               3'b110:begin  // BLTU
-                alu_result = `data_size-1'b0;
+                alu_result = `data_size'b0;
                 alu_zero = (src1 < src2);
                 temp = 64'd0;
               end
               3'b111:begin  // BGEU
-                alu_result = `data_size-1'b0;
+                alu_result = `data_size'b0;
                 alu_zero = ((src1 > src2) || (src1 == src2));
                 temp = 64'd0;
               end
               default:begin
-                alu_result = `data_size-1'b0;
+                alu_result = `data_size'b0;
                 alu_zero = 1'b0;
                 temp = 64'd0;
               end
@@ -197,7 +196,7 @@ module ALU(
             temp = 64'd0;
           end
           `Jtype:begin
-            alu_result = `data_size-1'b0;
+            alu_result = `data_size'b0;
             alu_zero = 1'b1; //no any value to writeback and branch here
             temp = 64'd0;
           end
@@ -212,14 +211,14 @@ module ALU(
             temp = 64'd0;
           end
           default:begin
-            alu_result = `data_size-1'b0;
+            alu_result = `data_size'b0;
             alu_zero = 1'b0;
             temp = 64'd0;
           end  // end Btype
         endcase
     end  // end if
     else begin
-      alu_result = `data_size-1'b0;
+      alu_result = `data_size'b0;
       alu_zero = 1'b0;
       temp = 64'd0;
     end  // end enable
