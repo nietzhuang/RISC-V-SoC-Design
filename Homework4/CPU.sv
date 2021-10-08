@@ -349,10 +349,10 @@ module CPU(
   ALU ALU0(
         .src1(src1),
         .src2(src2),
-        .opcode_EXE(opcode_ID_EXE),
+        .opcode_ID_EXE(opcode_ID_EXE),
         .funct7(funct7),
-        .funct3_EXE(funct3_ID_EXE),
-        .branch(MEM_ctr_ID_EXE[2]), // branch from EXE
+        .funct3_ID_EXE(funct3_ID_EXE),
+        .branch(MEM_ctr_ID_EXE[2]),  // branch from EXE
         .enable(alu_en_ID_EXE),
         .alu_result(alu_result),
         .jump_sel(jump_sel)
