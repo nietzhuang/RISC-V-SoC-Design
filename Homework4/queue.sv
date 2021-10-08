@@ -22,7 +22,7 @@ module queue(
   logic                                 flag_stall;
 
 
-  assgin flag_stall = Istall || Dstall;
+  assign flag_stall = Istall || Dstall;
 
   always_comb begin
     if(taken_sel)
@@ -39,7 +39,7 @@ module queue(
     else begin
       if(!flag_stall)
         slots <= imm_que;
-      if(!flag_stall) && (opcode_ID == `Btype))
+      if(()!flag_stall) && (opcode_ID == `Btype))
         PC_imm_que <= slots;
     end
   end
@@ -57,5 +57,6 @@ module queue(
         PC_imm <= `data_size'd0;
       endcase
     end
+end
 
 endmodule
