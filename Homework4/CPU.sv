@@ -377,9 +377,9 @@ module CPU(
         .Read_addr_1_ID_EXE(Read_addr_1_ID_EXE),
         .Read_addr_2_ID_EXE(Read_addr_2_ID_EXE),
         .RF_write(RF_write),
-        .RF_write_MEM(WB_ctr_EXE_MEM[1]),
-        .opcode_EXE(opcode_ID_EXE),
-        .opcode_MEM(opcode_EXE_MEM),
+        .RF_write_EXE_MEM(WB_ctr_EXE_MEM[1]),
+        .opcode_ID_EXE(opcode_ID_EXE),
+        .opcode_EXE_MEM(opcode_EXE_MEM),
         .Dcache_en(Dcache_en),
         .Dcache_write(Dcache_write),
 
