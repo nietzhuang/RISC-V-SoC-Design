@@ -365,8 +365,8 @@ module CPU(
 
   load_extension load_ext(
         .Dcache_out(Dcache_out),
-        .opcode_MEM(opcode_EXE_MEM),
-        .funct3_MEM(funct3_EXE_MEM),
+        .opcode_EXE_MEM(opcode_EXE_MEM),
+        .funct3_EXE_MEM(funct3_EXE_MEM),
 
         .Dcache_out_ext(Dcache_out_ext)
         );
