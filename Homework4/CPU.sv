@@ -393,7 +393,7 @@ module CPU(
         .Read_addr_2_EXE_MEM(Read_addr_2_EXE_MEM),
         .Dcache_write(Dcache_write),
         .RF_write(RF_write),
-        .opcode_MEM(opcode_EXE_MEM),
+        .opcode_EXE_MEM(opcode_EXE_MEM),
 
         .D_in_sel(D_in_sel)
         );
@@ -419,7 +419,7 @@ module CPU(
         );
 
   mux_sw_data mux_sw_data(
-        .Read_data_2_a2(Read_data_2_u), // output from mux_utype
+        .Read_data_2_u(Read_data_2_u), // output from mux_utype
         .write_data(write_data),
         .sw_data_sel(sw_data_sel),
 
@@ -427,7 +427,7 @@ module CPU(
         );
 
   mux_D_in mux_D_in(
-        .Read_data_2_MEM(Read_data_2_EXE_MEM),
+        .Read_data_2_EXE_MEM(Read_data_2_EXE_MEM),
         .write_data(write_data),
         .D_in_sel(D_in_sel),
 
