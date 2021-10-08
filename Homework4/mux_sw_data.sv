@@ -10,9 +10,9 @@ module mux_sw_data(
 
   always_comb begin
     unique case(sw_data_sel)
-      1'b0: Read_data_sw = Read_data_2_a2;
+      1'b0: Read_data_sw = Read_data_2_u;
       1'b1: Read_data_sw = write_data;
     endcase
   end
-  
+
 endmodule
