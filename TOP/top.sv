@@ -3,20 +3,31 @@
 `include "AHB.sv"
 `include "S1_wra.sv"
 `include "S2_wra.sv"
+`include "S3_wra.sv"
+`include "S4_wra.sv"
+`include "S5_wra.sv"
+
 
 module top(
   input                             clk,
   input                             rst,
   input         [`data_size-1:0]    IM_out,
   input         [`data_size-1:0]    DM_out,
-
+  input         [`data_size-1:0]    ROM_out,
+  input         [`data_size-1:0]    sctrl_out,
 
   output logic                      IM_enable,
-  output logic  [`data_size-1:0]    IM_address,
+  output logic  [`addr_size-1:0]    IM_address,
   output logic                      DM_write,
   output logic                      DM_enable,
   output logic  [`data_size-1:0]    DM_in,
-  output logic  [`data_size-1:0]    DM_address
+  output logic  [`addr_size-1:0]    DM_address,
+  output logic  [`data_size-1:0]    ROM_enable,
+  output logic  [`addr_size-1:0]    ROM_address,
+
+  output logic                      sctrl_en,
+  output logic                      sctrl_clear,
+  output logic  [5:0]               sctrl_addr
 );
 
   // AHB interface between among masters, AHB BUS and slaves.
@@ -50,12 +61,20 @@ module top(
   // The remaining connetions between slaves and AHB BUS.
   logic [`AHB_DATA_BITS-1:0]        HRDATA_S1;
   logic [`AHB_DATA_BITS-1:0]        HRDATA_S2;
+  logic [`AHB_DATA_BITS-1:0]        HRDATA_S3;
+  logic [`AHB_DATA_BITS-1:0]        HRDATA_S4;
   logic [`AHB_RESP_BITS-1:0]        HRESP_S1;
   logic [`AHB_RESP_BITS-1:0]        HRESP_S2;
+  logic [`AHB_RESP_BITS-1:0]        HRESP_S3;
+  logic [`AHB_RESP_BITS-1:0]        HRESP_S4;
   logic                             HREADY_S1;
   logic                             HREADY_S2;
+  logic                             HREADY_S3;
+  logic                             HREADY_S3;
   logic                             HSEL_S1;
   logic                             HSEL_S2;
+  logic                             HSEL_S3;
+  logic                             HSEL_S4;
 
 
   CPU CPU0(
@@ -89,7 +108,6 @@ module top(
   AHB AHB0(
          .HCLK(clk),
          .HRESETn(!rst),
-
          // M1 and M2 upstream inputs.
          .HADDR_M1(HADDR_M1),
          .HADDR_M2(HADDR_M2),
@@ -134,7 +152,6 @@ module top(
   S1_wra S_wrapper1(
          .clk(clk),
          .rst(rst),
-
          // Inputs from AHB BUS.
          .HADDR(HADDR),
          .HSIZE(HSIZE),
@@ -159,7 +176,6 @@ module top(
   S2_wra S_wrapper2(
          .clk(clk),
          .rst(rst),
-
          // Inputs from AHB BUS.
          .HADDR(HADDR),
          .HSIZE(HSIZE),
@@ -182,5 +198,86 @@ module top(
          .DM_in(DM_in),
          .DM_write(DM_write)
          );
+
+  S3_wra ROM_wrapper(
+        .clk(clk),
+        .rst(rst),
+        // Inputs from AHB BUS.
+        .HADDR(HADDR),
+        .HSIZE(HSIZE),
+        .HTRANS(HTRANS),
+        .HWDATA(HWDATA),
+        .HWRITE(HWRITE),
+        .HMASTER(HMASTER),
+        .HMASTLOCK(HMASTLOCK),
+        .HSEL_S3(HSEL_S3),
+        // Input from ROM.
+        .ROM_out(ROM_out),
+
+        // Outputs to AHB BUS.
+        .HRDATA_S3(HRDATA_S3),
+        .HREADY_S3(HREADY_S3),
+        .HRESP_S3(HRESP_S3),
+        // Outputs to to ROM.
+        .ROM_OE(ROM_OE),
+        .ROM_enable(ROM_enable),
+        .ROM_address(ROM_address)
+        );
+
+  S4_wra Sensor_wrapper(
+        .clk(clk),
+        .rst(rst),
+        // Inputs from AHB BUS.
+        .HTRANS(HTRANS),
+        .HADDR(HADDR),
+        .HWRITE(HWRITE),
+        .HSIZE(HSIZE),
+        .HWDATA(HWDATA),
+        .HMASTER(HMASTER),
+        .HMASTLOCK(HMASTLOCK),
+        .HSEL_S4(HSEL_S4),
+        // Input from Sensor.
+        .sctrl_out(sctrl_out),
+
+        // Outputs to AHB BUS.
+        .HRDATA_S4(HRDATA_S4),
+        .HREADY_S4(HREADY_S4),
+        .HRESP_S4(HRESP_S4),
+        // Outputs to Sensor.
+        .sctrl_en(sctrl_en),
+        .sctrl_clear(sctrl_clear),
+        .sctrl_addr(sctrl_addr)
+      );
+
+  S5_wra DRAM_wrapper(
+        .clk(clk),
+        .rst(rst),
+        .// Inputs from AHB BUS.
+        .HTRANS(HTRANS),
+        .HADDR(HADDR),
+        .HWRITE(HWRITE),
+        .HSIZE(HSIZE),
+        .HWDATA(HWDATA),
+        .HMASTER(HMASTER),
+        .HMASTLOCK(HMASTLOCK),
+        .HSEL_S5(HSEL_S5),
+        .// Input from DRAM.
+        .DRAM_out(DRAM_out),
+
+        .// Outputs to AHB BUS.
+        .HRDATA_S5(HRDATA_S5),
+        .HREADY_S5(HREADY_S5),
+        .HRESP_S5(HRESP_S5),
+        .// Outputs to DRAM.
+        .DRAM_CSn(DRAM_CSn),
+        .DRAM_WEn(DRAM_WEn),
+        .RASn(RASn),
+        .CASn(CASn),
+        .address(address),
+        .DI(DI)
+        );
+
+
+
 
 endmodule
