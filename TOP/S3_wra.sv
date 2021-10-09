@@ -33,7 +33,7 @@ module S3_wra(
   logic     [1:0]                       nstate;
 
 
-  always_ff@(posedge clk, negedge rst)begin
+  always_ff@(posedge clk, posedge rst)begin
     if(rst)
       cstate <= IDLE;
     else
