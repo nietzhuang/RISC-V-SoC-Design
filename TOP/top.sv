@@ -38,10 +38,10 @@ module top(
   output logic  [10:0]              DRAM_A,
   output logic  [`data_size-1:0]    DRAM_D,
   //haven't designed yet
-  output logic                      L1I_access,
-  output logic                      L1I_miss,
-  output logic                      L1D_access,
-  output logic                      L1D_miss
+  output logic  [63:0]              L1I_access,
+  output logic  [63:0]              L1I_miss,
+  output logic  [63:0]              L1D_access,
+  output logic  [63:0]              L1D_miss
 );
 
   // AHB interface between among masters, AHB BUS and slaves.
