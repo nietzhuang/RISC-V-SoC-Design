@@ -363,8 +363,9 @@ module top_tb;
       end
       cycle_cnt = {DM1.mem_data[8], DM1.mem_data[7]};
       inst_cnt = {DM1.mem_data[10], DM1.mem_data[9]};
+      */
     `endif
-*/
+
     `ifdef arch1
     $display("=============================================");
     IPC = inst_cnt * 1.0 / cycle_cnt;
