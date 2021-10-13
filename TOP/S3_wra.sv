@@ -22,13 +22,12 @@ module S3_wra(
   output logic                          HREADY_S3,
   output logic  [`AHB_RESP_BITS-1:0]    HRESP_S3,
   // Outputs to to ROM.
-  output logic                          ROM_OE, // read_enable
+  output logic                          ROM_OE,  // read_enable
   output logic                          ROM_enable,
   output logic  [`data_size-1:0]        ROM_address
 );
 
   parameter                             IDLE = 2'b00, ADDR = 2'b01, WAIT_READ = 2'b10, READ = 2'b11;
-
   logic     [1:0]                       cstate;
   logic     [1:0]                       nstate;
 

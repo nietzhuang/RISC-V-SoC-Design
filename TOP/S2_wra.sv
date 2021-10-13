@@ -4,7 +4,6 @@
 module S2_wra(
   input                                     clk,
   input                                     rst,
-
   // Inputs from AHB BUS.
   input         [`AHB_TRANS_BITS-1:0]       HTRANS,
   input         [`AHB_DATA_BITS-1:0]        HADDR,
@@ -69,55 +68,55 @@ module S2_wra(
         HRDATA_S2   = 32'b0;
         HREADY_S2   = 1'b1;
         HRESP_S2    = 1'b0;
-        DM_write    = 1'b0;
         DM_enable   = 1'b0;
         DM_address  = HADDR;
         DM_in       = 32'b0;
+        DM_write    = 1'b0;
       end
       ADDR:begin
         HRDATA_S2   = 32'b0;
         HREADY_S2   = 1'b0;
         HRESP_S2    = 1'b0;
-        DM_write    = HWRITE;
         DM_enable   = 1'b1;
         DM_address  = HADDR;
         DM_in       = HWDATA;
+        DM_write    = HWRITE;
       end
       WRITE:begin
         HRDATA_S2   = 32'b0;
         HREADY_S2   = 1'b1;
         HRESP_S2    = 1'b0;
-        DM_write    = HWRITE;
         DM_enable   = 1'b1;
         DM_address  = HADDR;
         DM_in       = HWDATA;
+        DM_write    = HWRITE;
       end
       WAIT_READ:begin
         HRDATA_S2   = 32'b0;  // wait for reading the DM_out.
         HREADY_S2   = 1'b0;
         HRESP_S2    = 1'b0;
-        DM_write    = HWRITE;
         DM_enable   = 1'b1;
         DM_address  = HADDR;  // address to read DM_out
         DM_in       = 32'b0;
+        DM_write    = HWRITE;
       end
       READ:begin
         HRDATA_S2   = DM_out;
         HREADY_S2   = 1'b1;
         HRESP_S2    = 1'b0;
-        DM_write    = HWRITE;
         DM_enable   = 1'b1;
         DM_address  = HADDR;
-        DM_in       = 1'b0;
+        DM_in       = 32'b0;
+        DM_write    = HWRITE;
       end
       default:begin
         HRDATA_S2   = 32'b0;
         HREADY_S2   = 1'b0;
         HRESP_S2    = 1'b0;
-        DM_write    = 1'b0;
         DM_enable   = 1'b0;
         DM_address  = 32'b0;
         DM_in       = 32'b0;
+        DM_write    = 1'b0;
       end
     endcase
   end

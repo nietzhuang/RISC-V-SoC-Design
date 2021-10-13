@@ -1,6 +1,8 @@
 `include "define.sv"
 `include "I_comparator.sv"
 `include "I_ctr.sv"
+`include "mux_DO.sv"
+`include "I_performance.sv"
 
 module Icache(
   input                                 clk,
@@ -16,7 +18,9 @@ module Icache(
   output logic  [`data_size-1:0]        IM_address,
   output logic                          Istall,
   output logic                          hit,
-  output logic                          address_rst
+  output logic                          address_rst,
+  output logic  [63:0]                  L1I_access,
+  output logic  [63:0]                  L1I_miss
 );
 
   logic     [`data_size-1:0]            DO[3:0];
@@ -105,6 +109,17 @@ module Icache(
         .v_bit(v_bit),
 
         .hit(hit)
+        );
+
+  I_performance I_perf(
+        .clk(clk),
+        .rst(rst),
+        .Icache_en(Icache_en),
+        .v_bit(v_bit),
+        .hit(hit),
+
+        .L1I_access(L1I_access),
+        .L1I_miss(L1I_miss)
         );
 
   I_ctr I_ctr(

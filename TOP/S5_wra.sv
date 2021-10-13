@@ -24,15 +24,15 @@ module S5_wra(
   // Outputs to DRAM.
   output logic                              DRAM_CSn,
   output logic                              DRAM_WEn,
-  output logic                              RASn,  // Row Address Select
-  output logic                              CASn,  // Column Address Select
-  output logic  [10:0]                      address,
-  output logic  [`data_size-1:0]            DI  // DataIn wire to D
+  output logic                              DRAM_RASn,  // Row Address Select
+  output logic                              DRAM_CASn,  // Column Address Select
+  output logic  [10:0]                      DRAM_A,
+  output logic  [`data_size-1:0]            DRAM_D  // DataIn wire to D
 );
 
   parameter                                 IDLE = 3'b000, RADDR1 = 3'b001, RADDR2 = 3'b010, CADDR1 = 3'b011, CADDR2 = 3'b011, WAIT_READ = 3'b100, READ = 3'b101;
   logic     [2:0]                           cstate;
-  logic     [2:0]                           cstate;
+  logic     [2:0]                           nstate;
 
 
   assign row_addr = HADDR[21:11];
@@ -82,10 +82,10 @@ module S5_wra(
         HRESP_S5    = 2'b0;
         DRAM_CSn    = 1'b1;  // disable
         DRAM_WEn    = 1'b1;
-        RASn        = 1'b1;
-        CASn        = 1'b1;
-        address     = col_addr;
-        DI          = HWDATA;
+        DRAM_RASn   = 1'b1;
+        DRAM_CASn   = 1'b1;
+        DRAM_A      = col_addr;
+        DRAM_D      = HWDATA;
       end
       RADDR1:begin
         HRDATA_S5   = 32'd0;
@@ -93,10 +93,10 @@ module S5_wra(
         HRESP_S5    = 2'b0;
         DRAM_CSn    = 1'b0;
         DRAM_WEn    = 1'b1;
-        RASn        = 1'b1;
-        CASn        = 1'b1;
-        address     = row_addr;
-        DI          = HWDATA;
+        DRAM_RASn   = 1'b1;
+        DRAM_CASn   = 1'b1;
+        DRAM_A      = row_addr;
+        DRAM_D      = HWDATA;
       end
       RADDR2:begin
         HRDATA_S5   = 32'd0;
@@ -104,10 +104,10 @@ module S5_wra(
         HRESP_S5    = 2'b0;
         DRAM_CSn    = 1'b0;
         DRAM_WEn    = 1'b1;
-        RASn        = 1'b0;  // enable row
-        CASn        = 1'b1;
-        address     = row_addr;
-        DI          = HWDATA;
+        DRAM_RASn   = 1'b0;  // enable row
+        DRAM_CASn   = 1'b1;
+        DRAM_A      = row_addr;
+        DRAM_D      = HWDATA;
       end
       CADDR1:begin
         HRDATA_S5   = 32'd0;
@@ -115,10 +115,10 @@ module S5_wra(
         HRESP_S5    = 2'b0;
         DRAM_CSn    = 1'b0;
         DRAM_WEn    = 1'b1;
-        RASn        = 1'b1;
-        CASn        = 1'b1;
-        address     = col_addr;
-        DI          = HWDATA;
+        DRAM_RASn   = 1'b1;
+        DRAM_CASn   = 1'b1;
+        DRAM_A      = col_addr;
+        DRAM_D      = HWDATA;
       end
       CADDR2:begin
         HRDATA_S5   = 32'd0;
@@ -126,10 +126,10 @@ module S5_wra(
         HRESP_S5    = 2'b0;
         DRAM_CSn    = 1'b0;
         DRAM_WEn    = 1'b1;
-        RASn        = 1'b1;
-        CASn        = 1'b0;  // enable column
-        address     = col_addr;
-        DI          = HWDATA;
+        DRAM_RASn   = 1'b1;
+        DRAM_CASn   = 1'b0;  // enable column
+        DRAM_A      = col_addr;
+        DRAM_D      = HWDATA;
       end
       WAIT_READ:begin
         HRDATA_S5   = 32'd0;
@@ -137,10 +137,10 @@ module S5_wra(
         HRESP_S5    = 2'b0;
         DRAM_CSn    = 1'b0;
         DRAM_WEn    = 1'b1;
-        RASn        = 1'b1;
-        CASn        = 1'b1;
-        address     = col_addr;
-        DI          = 32'd0;
+        DRAM_RASn   = 1'b1;
+        DRAM_CASn   = 1'b1;
+        DRAM_A      = col_addr;
+        DRAM_D      = 32'd0;
       end
       READ:begin
         HRDATA_S5   = DRAM_out;
@@ -148,21 +148,21 @@ module S5_wra(
         HRESP_S5    = 2'b0;
         DRAM_CSn    = 1'b0;
         DRAM_WEn    = 1'b1;
-        RASn        = 1'b1;
-        CASn        = 1'b1;
-        address     = col_addr;
-        DI          = 32'd0;
+        DRAM_RASn   = 1'b1;
+        DRAM_CASn   = 1'b1;
+        DRAM_A      = col_addr;
+        DRAM_D      = 32'd0;
       end
       default:begin
-        HRDATA_S5   = 32'd0
+        HRDATA_S5   = 32'd0;
         HREADY_S5   = 1'b0;
         HRESP_S5    = 2'b0;
         DRAM_CSn    = 1'b1;
         DRAM_WEn    = 1'b1;
-        RASn        = 1'b1;
-        CASn        = 1'b1;
-        address     = 11'd0;
-        DI          = 32'd0;
+        DRAM_RASn   = 1'b1;
+        DRAM_CASn   = 1'b1;
+        DRAM_A      = 11'd0;
+        DRAM_D      = 32'd0;
       end
     endcase
   end

@@ -8,7 +8,7 @@ module D_ctr(
   input                                 Dcache_write, // DM_write originally
   input                                 ready,
   input                                 hit,
-  input         [2:0]                   funct3_EXE_MEM,
+  input         [2:0]                   funct3_MEM,
 
   output logic                          CS_tag,
   output logic                          OE_tag,
@@ -25,9 +25,11 @@ module D_ctr(
 );
 
   parameter                             IDLE = 3'b000, FETCH = 3'b001, WAIT = 3'b010, COUNT = 3'b011, READ = 3'b100, WRITE = 3'b101, WRITE_DM = 3'b110;
-  logic     [2:0]                       cstate, nstate;
+  logic     [2:0]                       cstate;
+  logic     [2:0]                       nstate;
   logic     [1:0]                       counter;
-
+  logic     [63:0]                      L1D_access;
+  logic     [63:0]                      L1D_miss;
 
   always_ff@(posedge clk, posedge rst)begin
     if(rst)
@@ -36,6 +38,17 @@ module D_ctr(
       counter <= 2'b0;
     else if( (cstate == COUNT) && ready )
       counter <= counter + 1;
+  end
+
+  always_ff@(posedge clk, posedge rst)begin
+    if(rst)begin
+      L1D_access <= 32'b0;
+      L1D_miss <= 32'b0;
+    end
+    else if(cstate == FETCH)begin
+      L1D_access <= L1D_access + 1;
+      L1D_miss <= L1D_miss + 1;
+    end
   end
 
   always_ff@(posedge clk, posedge rst)begin
@@ -187,7 +200,7 @@ module D_ctr(
         2'b10: CS_data  = 4'b0100;
         2'b11: CS_data  = 4'b1000;
       endcase
-      if(funct3_EXE_MEM == 3'b000)begin  // SB
+      if(funct3_MEM == 3'b000)begin  // SB
         unique case(address[1:0])
           2'b00: WEB_data = 4'b1110;
           2'b01: WEB_data = 4'b1101;
@@ -195,7 +208,7 @@ module D_ctr(
           2'b11: WEB_data = 4'b0111;
         endcase
       end
-      else if(funct3_EXE_MEM == 3'b001)begin  // SH
+      else if(funct3_MEM == 3'b001)begin  // SH
         WEB_data        = 4'b1100;
       end
       else

@@ -2,6 +2,7 @@
 `include "D_comparator.sv"
 `include "D_ctr.sv"
 `include "mux_Din.sv"
+`include "D_performance.sv"
 
 module Dcache(
   input                                 clk,
@@ -12,14 +13,16 @@ module Dcache(
   input         [`data_size-1:0]        Dcache_in,
   input                                 ready,
   input         [`data_size-1:0]        DataIn,
-  input         [2:0]                   funct3_EXE_MEM,
+  input         [2:0]                   funct3_MEM,
 
   output logic  [`data_size-1:0]        DataOut,
   output logic  [`data_size-1:0]        DM_address,
   output logic                          DM_enable,
   output logic                          DM_write,
   output logic                          Dstall,
-  output logic                          stall_Dcount
+  output logic                          stall_Dcount,
+  output logic  [63:0]                  L1D_access,
+  output logic  [63:0]                  L1D_miss
 );
 
   logic     [`data_size-1:0]            DO[3:0];
@@ -108,11 +111,22 @@ module Dcache(
 
   D_comparator D_comp(
         .tag(tag),
-        .D_tag(address[31:10]), // wire to D_address
+        .D_tag(address[31:10]),  // wire to D_address
         .v_bit(v_bit),
 
         .hit(hit)
         );
+
+  D_performance D_perf(
+        .clk(clk),
+        .rst(rst),
+        .Dcache_en(Dcache_en),
+        .v_bit(v_bit),
+        .hit(hit),
+
+        .L1D_access(L1D_access),
+        .L1D_miss(L1D_miss)
+  );
 
   D_ctr D_ctr(
         .clk(clk),
@@ -122,7 +136,7 @@ module Dcache(
         .Dcache_write(Dcache_write),
         .ready(ready),
         .hit(hit),
-        .funct3_EXE_MEM(funct3_EXE_MEM),
+        .funct3_MEM(funct3_MEM),
 
         .CS_tag(CS_tag),
         .OE_tag(OE_tag),

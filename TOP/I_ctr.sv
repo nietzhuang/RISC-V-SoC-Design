@@ -22,9 +22,39 @@ module I_ctr(
 );
 
   parameter                             IDLE = 3'b000, FETCH = 3'b001, WAIT = 3'b010, COUNT = 3'b011, READ = 3'b100;
-  logic     [2:0]                       cstate, nstate;
+  logic     [2:0]                       cstate;
+  logic     [2:0]                       nstate;
   logic     [1:0]                       counter;
+  logic     [63:0]                      L1I_access;
+  logic     [63:0]                      L1I_miss;
 
+
+  always_ff@(posedge clk, posedge rst)begin
+    if(rst)
+      counter <= 2'b0;
+    else if((cstate == IDLE)||((counter == 2'b11) && ready))
+      counter <= 2'b0;
+    else if((cstate == COUNT)&& ready && (!stall_Dcount))
+      counter <= counter + 1;
+  end
+
+  always_ff@(posedge clk, posedge rst)begin
+    if(rst)
+      address_rst <=1'b1;
+    else
+      address_rst <= 1'b0;
+  end
+
+  always_ff@(posedge clk, posedge rst)begin
+    if(rst)begin
+      L1I_access <= 32'b0;
+      L1I_miss <= 32'b0;
+    end
+    else if(cstate == FETCH)begin
+      L1I_access <= L1I_access + 1;
+      L1I_miss <= L1I_miss + 1;
+    end
+  end
 
   always_ff@(posedge clk, posedge rst)begin
     if(rst)
@@ -132,20 +162,6 @@ module I_ctr(
     endcase
   end
 
-  always_ff@(posedge clk, posedge rst)begin
-    if(rst)
-      counter <= 2'b0;
-    else if((cstate == IDLE)||((counter == 2'b11) && ready))
-      counter <= 2'b0;
-    else if((cstate == COUNT)&& ready && (!stall_Dcount))
-      counter <= counter + 1;
-  end
 
-  always_ff@(posedge clk, posedge rst)begin
-    if(rst)
-      address_rst <=1'b1;
-    else
-      address_rst <= 1'b0;
-  end
 
 endmodule

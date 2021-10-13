@@ -8,6 +8,6 @@ module D_comparator(
   output logic              hit
 );
 
-  assign hit = (tag == D_tag)? 1'b1 : 1'b0;
+  assign hit = ((tag == D_tag) && v_bit)? 1'b1 : 1'b0;
 
 endmodule

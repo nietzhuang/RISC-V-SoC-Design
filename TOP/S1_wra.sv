@@ -4,7 +4,6 @@
 module S1_wra(
   input                                     clk,
   input                                     rst,
-
   // Inputs from AHB BUS.
   input         [`AHB_DATA_BITS-1:0]        HADDR,
   input         [`AHB_SIZE_BITS-1:0]        HSIZE,
@@ -23,9 +22,9 @@ module S1_wra(
   output logic  [`AHB_RESP_BITS-1:0]        HRESP_S1,
   // Outputs to IM.
   output logic                              IM_enable,
-  output logic  [`data_size-1:0]            IM_address
-  //output logic [`data_size-1:0] IM_in,
-  //output logic                              IM_write,
+  output logic  [`data_size-1:0]            IM_address,
+  output logic  [`data_size-1:0]            IM_in,
+  output logic                              IM_write
 );
 
   logic [2:0] cstate, nstate;
@@ -41,7 +40,7 @@ module S1_wra(
   always_comb begin
     case(cstate)
       IDLE:begin
-        if(HSEL_S1&&(HMASTER == 4'b0010)) // select M1 and Master = M1
+        if(HSEL_S1&&(HMASTER == 4'b0010))  // select M1 and Master = M1
           nstate = ADDR;
         else
           nstate = IDLE;
@@ -71,6 +70,8 @@ module S1_wra(
         HRESP_S1    = 2'b0;
         IM_enable   = 1'b0;
         IM_address  = HADDR;
+        IM_in       = HWDATA;
+        IM_write    = HWRITE;
       end
       ADDR:begin
         HRDATA_S1   = 32'b0;
@@ -78,6 +79,8 @@ module S1_wra(
         HRESP_S1    = 1'b0;
         IM_enable   = 1'b1;
         IM_address  = HADDR;
+        IM_in       = HWDATA;
+        IM_write    = HWRITE;
       end
       WRITE:begin  // IM would never be written.
         HRDATA_S1   = 32'b0;
@@ -85,6 +88,8 @@ module S1_wra(
         HRESP_S1    = 1'b0;
         IM_enable   = 1'b1;
         IM_address  = HADDR;
+        IM_in       = HWDATA;
+        IM_write    = HWRITE;
       end
       WAIT_READ:begin // wait for reading the IM_out.
         HRDATA_S1   = IM_out;
@@ -92,6 +97,8 @@ module S1_wra(
         HRESP_S1    = 1'b0;
         IM_enable   = 1'b1;
         IM_address  = HADDR; // address to read IM_out.
+        IM_in       = 32'b0;
+        IM_write    = HWRITE;
       end
       READ:begin
         HRDATA_S1   = IM_out;
@@ -99,6 +106,8 @@ module S1_wra(
         HRESP_S1    = 1'b0;
         IM_enable   = 1'b1;
         IM_address  = HADDR;
+        IM_in       = 32'b0;
+        IM_write    = HWRITE;
       end
       default:begin
         HRDATA_S1   = 32'b0;
@@ -106,6 +115,8 @@ module S1_wra(
         HRESP_S1    = 1'b0;
         IM_enable   = 1'b0;
         IM_address  = 32'b0;
+        IM_in       = 32'b0;
+        IM_write    = 1'b0;
       end
     endcase
   end

@@ -3,7 +3,7 @@
 module mux_jalr(
   input         [`data_size-1:0]        PC_jump,
   input         [`data_size-1:0]        alu_result,
-  input         [6:0]                   opcode_ID_EXE,
+  input         [6:0]                   opcode_EXE,
 
   output logic  [`data_size-1:0]        PC_jump_jalr,
   output logic                          flush_jalr
@@ -12,7 +12,7 @@ module mux_jalr(
   logic                                 jalr_sel;
 
 
-  assign jalr_sel = (opcode_ID_EXE == `JALR);
+  assign jalr_sel = (opcode_EXE == `JALR);
 
   always_comb begin
     unique case(jalr_sel)

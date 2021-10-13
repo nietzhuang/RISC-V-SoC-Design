@@ -1,0 +1,51 @@
+20000537 // lui x10, 0x20000
+02052023 // sw x0, 32 (x10)
+02052623 // sw x0, 44 (x10)
+02052823 // sw x0, 48 (x10)
+000F00B7 // lui x1, 0x000f0
+00808093 // addi x1, x1, 0x8                # x1 = 0x000f0008
+30009073 // csrrw x0, mstatus, x1           # mstatus = 0x8
+300021F3 // csrrs x3, mstatus, x0           # x3 = 0x8
+51900213 // add x4, x0, 0x519
+51920213 // add x4, x4, 0x519               # x4 = 0xa32
+30421073 // csrrw x0, mie, x4               # mie = 0x800
+000E52B7 // lui x5, 0x000e5
+0F028293 // addi x5, x5, 0x0f0              # x5 = 0x000e50f0
+30529073 // csrrw x0, mtvec, x5             # mtvec = 0x10000000
+34129073 // csrrw x0, mepc, x5              # mepc = 0x000e50f0
+00152223 // sw x1, 4 (x10)                  # DM[1] = 0x000f0008
+00352623 // sw x3, 12 (x10)                 # DM[3] = 0x8
+00452823 // sw x4, 16 (x10)                 # DM[4] = 0xa32
+00552A23 // sw x5, 20 (x10)                 # DM[5] = 0x000e50f0
+3410A173 // csrrs x2, mepc, x1              # x2 = 0x000e50f0, mepc = 0x000f50f8
+3410B373 // csrrc x6, mepc, x1              # x6 = 0x000f50f8, mepc = 0x50f0
+341853F3 // csrrwi x7, mepc, 0x10           # x7 = 0x50f0, mepc = 0x10
+00001A37 // lui x20, 0x00001                # x20 = 0x00001000
+FFFA0A13 // addi x20, x20, -0x1             # x20 = 0xfff
+03452423 // sw x20, 40 (x10)                # DM[10] = 0xfff
+02852403 // lw x8, 40 (x10)                 # x8 = 0xfff
+34441073 // csrrw x0, mip, x8               # mip = 0x800
+344024F3 // csrrs x9, mip, x0               # x9 = 0x0
+02952223 // sw x9, 36 (x10)                 # DM[9] = 0x0
+00652C23 // sw x6, 24 (x10)                 # DM[6] = 0x000f50f8
+00752E23 // sw x7, 28 (x10)                 # DM[7] = 0x50f0
+00252423 // sw x2, 8 (x10)                  # DM[2] = 0x000e50f0
+00052023 // sw x0, 0 (x10)                  # DM[0] = 0x0
+341666F3 // csrrsi x13, mepc, 0xc           # x13 = 0x10, mepc = 0x1c
+34147773 // csrrci x14, mepc, 0x8           # x14 = 0x1c, mepc = 0x14
+341027F3 // csrrs x15, mepc, x0             # x15 = 0x14
+02D52A23 // sw x13, 52 (x10)                # DM[13] = 0x10
+02E52C23 // sw x14, 56 (x10)                # DM[14] = 0x1c
+02F52E23 // sw x15, 60 (x10)                # DM[15] = 0x14
+B0002873 // csrrs x16, mcycle, x0
+B80028F3 // csrrs x17, mcycleh, x0
+B0202973 // csrrs x18, minstret, x0
+B82029F3 // csrrs x19, minstreth, x0
+05052023 // sw x16, 64 (x10)
+05152223 // sw x17, 68 (x10)
+05252423 // sw x18, 72 (x10)
+05352623 // sw x19, 76 (x10)
+20040F37 // finish: lui x30, 0x20040
+FFFFFFB7 // lui x31, 0xfffff
+FFFF2E23 // sw x31, -4 (x30)
+FF5FF06F // j finish

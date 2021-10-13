@@ -6,6 +6,7 @@
 `include "S3_wra.sv"
 `include "S4_wra.sv"
 `include "S5_wra.sv"
+`include "sensor_ctrl.sv"
 
 
 module top(
@@ -14,20 +15,33 @@ module top(
   input         [`data_size-1:0]    IM_out,
   input         [`data_size-1:0]    DM_out,
   input         [`data_size-1:0]    ROM_out,
-  input         [`data_size-1:0]    sctrl_out,
+  input                             sensor_ready,
+  input         [`data_size-1:0]    sensor_out,
+  input         [`data_size-1:0]    DRAM_Q,
 
   output logic                      IM_enable,
   output logic  [`addr_size-1:0]    IM_address,
+  output logic  [`data_size-1:0]    IM_in,
+  output logic                      IM_write,
   output logic                      DM_write,
   output logic                      DM_enable,
   output logic  [`data_size-1:0]    DM_in,
   output logic  [`addr_size-1:0]    DM_address,
   output logic  [`data_size-1:0]    ROM_enable,
   output logic  [`addr_size-1:0]    ROM_address,
-
-  output logic                      sctrl_en,
-  output logic                      sctrl_clear,
-  output logic  [5:0]               sctrl_addr
+  output logic                      ROM_read,
+  output logic                      sensor_en,
+  output logic                      DRAM_CSn,
+  output logic                      DRAM_WEn,
+  output logic                      DRAM_RASn,
+  output logic                      DRAM_CASn,
+  output logic  [10:0]              DRAM_A,
+  output logic  [`data_size-1:0]    DRAM_D,
+  //haven't designed yet
+  output logic                      L1I_access,
+  output logic                      L1I_miss,
+  output logic                      L1D_access,
+  output logic                      L1D_miss
 );
 
   // AHB interface between among masters, AHB BUS and slaves.
@@ -63,30 +77,34 @@ module top(
   logic [`AHB_DATA_BITS-1:0]        HRDATA_S2;
   logic [`AHB_DATA_BITS-1:0]        HRDATA_S3;
   logic [`AHB_DATA_BITS-1:0]        HRDATA_S4;
+  logic [`AHB_DATA_BITS-1:0]        HRDATA_S5;
   logic [`AHB_RESP_BITS-1:0]        HRESP_S1;
   logic [`AHB_RESP_BITS-1:0]        HRESP_S2;
   logic [`AHB_RESP_BITS-1:0]        HRESP_S3;
   logic [`AHB_RESP_BITS-1:0]        HRESP_S4;
+  logic [`AHB_RESP_BITS-1:0]        HRESP_S5;
   logic                             HREADY_S1;
   logic                             HREADY_S2;
   logic                             HREADY_S3;
-  logic                             HREADY_S3;
+  logic                             HREADY_S4;
+  logic                             HREADY_S5;
   logic                             HSEL_S1;
   logic                             HSEL_S2;
   logic                             HSEL_S3;
   logic                             HSEL_S4;
+  logic                             HSEL_S5;
 
 
   CPU CPU0(
          .clk(clk),
          .rst(rst),
-
          // Inputs from AHB BUS.
          .HGRANT_M1(HGRANT_M1),
          .HGRANT_M2(HGRANT_M2),
          .HRDATA(HRDATA),
          .HREADY(HREADY),
          .HRESP(HRESP),
+         .interrupt(sctrl_interrupt),
 
          // Outputs to AHB BUS.
          .HADDR_M1(HADDR_M1),
@@ -102,10 +120,14 @@ module top(
          .HWDATA_M1(HWDATA_M1),
          .HWDATA_M2(HWDATA_M2),
          .HWRITE_M1(HWRITE_M1),
-         .HWRITE_M2(HWRITE_M2)
+         .HWRITE_M2(HWRITE_M2),
+         .L1I_access(L1I_access),
+         .L1I_miss(L1I_miss),
+         .L1D_access(L1D_access),
+         .L1D_miss(L1D_miss)
          );
 
-  AHB AHB0(
+  AHB AHB(
          .HCLK(clk),
          .HRESETn(!rst),
          // M1 and M2 upstream inputs.
@@ -149,7 +171,7 @@ module top(
          .HSEL_S2(HSEL_S2)
          );
 
-  S1_wra S_wrapper1(
+  S1_wra IM_wrapper(
          .clk(clk),
          .rst(rst),
          // Inputs from AHB BUS.
@@ -170,10 +192,12 @@ module top(
          .HRESP_S1(HRESP_S1),
          // Outputs to IM.
          .IM_enable(IM_enable),
-         .IM_address(IM_address)
+         .IM_address(IM_address),
+         .IM_in(IM_in),
+         .IM_write(IM_write)
          );
 
-  S2_wra S_wrapper2(
+  S2_wra DM_wrapper(
          .clk(clk),
          .rst(rst),
          // Inputs from AHB BUS.
@@ -236,14 +260,14 @@ module top(
         .HMASTER(HMASTER),
         .HMASTLOCK(HMASTLOCK),
         .HSEL_S4(HSEL_S4),
-        // Input from Sensor.
+        // Inputs from Sensor Controller.
         .sctrl_out(sctrl_out),
 
         // Outputs to AHB BUS.
         .HRDATA_S4(HRDATA_S4),
         .HREADY_S4(HREADY_S4),
         .HRESP_S4(HRESP_S4),
-        // Outputs to Sensor.
+        // Outputs to Sensor Controller.
         .sctrl_en(sctrl_en),
         .sctrl_clear(sctrl_clear),
         .sctrl_addr(sctrl_addr)
@@ -252,7 +276,7 @@ module top(
   S5_wra DRAM_wrapper(
         .clk(clk),
         .rst(rst),
-        .// Inputs from AHB BUS.
+        // Inputs from AHB BUS.
         .HTRANS(HTRANS),
         .HADDR(HADDR),
         .HWRITE(HWRITE),
@@ -261,23 +285,38 @@ module top(
         .HMASTER(HMASTER),
         .HMASTLOCK(HMASTLOCK),
         .HSEL_S5(HSEL_S5),
-        .// Input from DRAM.
-        .DRAM_out(DRAM_out),
+        // Input from DRAM.
+        .DRAM_out(DRAM_Q),
 
-        .// Outputs to AHB BUS.
+        // Outputs to AHB BUS.
         .HRDATA_S5(HRDATA_S5),
         .HREADY_S5(HREADY_S5),
         .HRESP_S5(HRESP_S5),
-        .// Outputs to DRAM.
+        // Outputs to DRAM.
         .DRAM_CSn(DRAM_CSn),
         .DRAM_WEn(DRAM_WEn),
-        .RASn(RASn),
-        .CASn(CASn),
-        .address(address),
-        .DI(DI)
+        .DRAM_RASn(DRAM_RASn),
+        .DRAM_CASn(DRAM_CASn),
+        .DRAM_A(DRAM_A),
+        .DRAM_D(DRAM_D)
         );
 
+  sensor_ctrl sensor_ctrl(
+        .clk(clk),
+        .rst(rst),
+        // Inputs from CPU via Sensor_wrapper.
+        .sctrl_en(sctrl_en),
+        .sctrl_clear(sctrl_clear),
+        .sctrl_addr(sctrl_addr),
+        // Inputs from Sensor.
+        .sensor_ready(sensor_ready),
+        .sensor_out(sensor_out),
 
-
+        // Outputs to CPU via Sensor wrapper.
+        .sctrl_interrupt(sctrl_interrupt),  // wire to CPU directly.
+        .sctrl_out(sctrl_out),
+        // Output to Sensor.
+        .sensor_en(sensor_en)
+        );
 
 endmodule

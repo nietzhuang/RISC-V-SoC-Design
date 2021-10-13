@@ -3,7 +3,7 @@
 module predict(
   input                     clk,
   input                     rst,
-  input         [6:0]       opcode_ID_EXE, // from EXE stage
+  input         [6:0]       opcode_EXE,
   input                     jump_sel,
   input                     Istall,
   input                     Dstall,
@@ -28,7 +28,7 @@ module predict(
   end
 
   always_comb begin
-    if(jump_sel && (opcode_ID_EXE == `Btype))begin
+    if(jump_sel && (opcode_EXE == `Btype))begin
       unique case(cstate)
         ntaken0:begin
           if(jump_sel)
@@ -68,5 +68,5 @@ module predict(
       taken_sel = 1'b1;
     endcase
   end
-  
+
 endmodule

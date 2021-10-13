@@ -3,9 +3,9 @@
 module ALU(
   input         [`data_size-1:0]        src1,
   input         [`data_size-1:0]        src2,
-  input         [6:0]                   opcode_ID_EXE,
+  input         [6:0]                   opcode_EXE,
   input         [6:0]                   funct7,
-  input         [2:0]                   funct3_ID_EXE,
+  input         [2:0]                   funct3_EXE,
   input                                 branch,
   input                                 enable,
 
@@ -21,9 +21,9 @@ module ALU(
 
   always_comb begin
     if(enable)begin
-      case(opcode_ID_EXE)
+      case(opcode_EXE)
         `Rtype, `Itype:
-          unique case(funct3_ID_EXE)
+          unique case(funct3_EXE)
             `ADD:begin
               if(funct7 == 7'b0100000)begin  // SUB
                 alu_result = src1 - src2;
@@ -80,7 +80,7 @@ module ALU(
             end
           endcase  // end case of funt3 of Rtype, Itype
           7'b0000011:begin  // Load
-            unique case(funct3_ID_EXE)
+            unique case(funct3_EXE)
               3'b010:begin  // LW
                 alu_result = src1 + src2;  // calulate the address
                 alu_zero = 1'b0;
@@ -101,14 +101,14 @@ module ALU(
                 alu_result = src1 + src2;
                 alu_zero = 1'b0;
               end
-            endcase // end case of funct3_ID_EXE 0000011
+            endcase // end case of funct3_EXE 0000011
           end
           `Stype:begin
             alu_result = src1 + src2;
             alu_zero = 1'b0;
           end
           `Btype:begin
-            case(funct3_ID_EXE)
+            case(funct3_EXE)
               3'b000:begin  // BEQ
                 alu_result = src1 - src2;
                 alu_zero = (alu_result == 0);
@@ -176,6 +176,10 @@ module ALU(
           `AUIPC:begin
             alu_result = src1 + src2 - 32'd4; // PC + imm, not PC+4 + imm
             alu_zero = 1'b1;
+          end
+          `CSR:begin
+              alu_result = src2;  // src2 read from csr.
+              alu_zero = 1'b0;
           end
           default:begin
             alu_result = `data_size'b0;

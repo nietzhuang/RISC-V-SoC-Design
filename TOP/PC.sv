@@ -4,8 +4,6 @@ module PC(
   input                                 clk,
   input                                 rst,
   input         [`data_size-1:0]        PC_in_pred,
-  input         [6:0]                   opcode_ID_EXE,
-  input         [6:0]                   opcode_EXE_MEM,
   input                                 jump_sel,
   input                                 taken_sel,
   input                                 Istall,

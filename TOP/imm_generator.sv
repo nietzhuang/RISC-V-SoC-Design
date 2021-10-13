@@ -6,13 +6,13 @@ module imm_generator(
   output logic  [`data_size-1:0]        imm
 );
 
-  logic     [6:0]                       opcode_ID_EXE;
+  logic     [6:0]                       opcode_ID;
 
 
-  assign opcode_ID_EXE = imm_in[6:0];
+  assign opcode_ID = imm_in[6:0];
 
   always_comb begin
-    case(opcode_ID_EXE)
+    case(opcode_ID)
       `Itype, 'b0000011, 'b1100111:begin  // include LW, JALR
       if(imm_in[31] == 0)
         imm = {20'b0, imm_in[31:20]};
@@ -47,6 +47,8 @@ module imm_generator(
         else
           imm = 32'b0;
       end
+      `CSR:
+        imm = {27'b0, imm_in[19:15]};  // only zero extension.
       default:  // include Rtype
         imm = 32'b0;
     endcase

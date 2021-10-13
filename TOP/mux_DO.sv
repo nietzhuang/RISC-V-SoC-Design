@@ -10,11 +10,12 @@ module mux_DO(
 
 
   always_comb begin
-    unique case(DO_sel)
+    case(DO_sel)
       2'b00: data = DO_0;
       2'b01: data = DO_1;
       2'b10: data = DO_2;
       2'b11: data = DO_3;
+    default: data = `data_size'b0;
     endcase
   end
 

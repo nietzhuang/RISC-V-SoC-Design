@@ -1,4 +1,4 @@
-// for Sensor
+// Sensor
 `include "define.sv"
 `include "AHB_def.svh"
 
@@ -14,31 +14,33 @@ module S4_wra(
   input         [`AHB_MASTER_BITS-1:0]      HMASTER,
   input                                     HMASTLOCK,
   input                                     HSEL_S4,
-  // Input from Sensor.
+  // Input from Sensor Controller.
   input         [`data_size-1:0]            sctrl_out,
-  //input sctrl_interrupt,
 
   // Outputs to AHB BUS.
   output logic  [`AHB_DATA_BITS-1:0]        HRDATA_S4,
   output logic                              HREADY_S4,
   output logic  [`AHB_RESP_BITS-1:0]        HRESP_S4,
-  // Outputs to Sensor.
+  // Outputs to Sensor Controller.
   output logic                              sctrl_en,
   output logic                              sctrl_clear,
   output logic  [5:0]                       sctrl_addr
+
 );
 
   parameter                                 IDLE = 2'b00, ADDR = 2'b01, WAITnCLEAR = 2'b10, READ = 2'b11;
   logic     [1:0]                           cstate;
-  logic     [1:0]                           cnstate;
+  logic     [1:0]                           nstate;
   logic     [`data_size-1:0]                Reg0100;  // store the value at address 0x3000_0100.
 
 
-  always_ff@(posedge clk, posedge rst)begin  // store value from the address 0x3000_0100.
+  always_ff@(posedge clk, posedge rst)begin  //!! This might be reduced as 1-bit signal.    // store value from the address 0x3000_0100.
     if(rst)
       Reg0100 <= 32'd0;
-    else if (HWRITE && (HADDR = 32'h3000_0100))
+    else if (HWRITE && (HADDR == 32'h3000_0100))
       Reg0100 <= HWDATA;
+    else if (HWRITE && (HADDR == 32'h3000_0200))
+      Reg0100 <= 32'b0;
   end
 
   always_ff@(posedge clk, posedge rst)begin
@@ -57,7 +59,7 @@ module S4_wra(
 		  nstate = IDLE;
 	  end
 	  ADDR:
-	    nstate = WAITnCLEAR;
+	    nstate = WAITnCLEAR;   //!!!  check clear mechanism.
 	  WAITnCLEAR:
         nstate = READ;
 	  READ:
@@ -73,45 +75,43 @@ module S4_wra(
 	  	HRDATA_S4      = sctrl_out;
 	    HREADY_S4      = 1'd1;
 	    HRESP_S4       = 2'd0;
-	    sctrl_clear    = 1'd0;
-	    sctrl_addr     = 32'd0;
+        sctrl_en       = 1'b0;
+        sctrl_clear    = 1'b0;
+        sctrl_addr     = 6'b0;
 	  end
 	  ADDR:begin
 	  	HRDATA_S4      = 32'd0;
 	    HREADY_S4      = 1'd0;
 	    HRESP_S4       = 2'd0;
-	    sctrl_clear    = 1'd0;
-	    sctrl_addr     = HADDR[7:2];
+        sctrl_en       = 1'b1;
+        sctrl_clear    = 1'b0;
+        sctrl_addr     = HADDR;
 	  end
 	  WAITnCLEAR:begin
 	    HRDATA_S4      = 32'd0;
 	    HREADY_S4      = 1'd0;
 	    HRESP_S4       = 2'd0;
-        sctrl_clear    = (HWRITE && (HWDATA != 32'd0) && (HADDR == 32'h3000_0200))? 1'b1 : 1'b0;
-	    sctrl_addr     = HADDR[7:2];
+        sctrl_en       = 1'b1;
+        sctrl_clear    = 1'b1;
+        sctrl_addr     = HADDR;
 	  end
 	  READ:begin
         HRDATA_S4      = sctrl_out;
 	    HREADY_S4      = 1'd1;
 	    HRESP_S4       = 2'd0;
-        sctrl_clear    = 1'd0;
-        sctrl_addr     = HADDR[7:2];
+        sctrl_en       = 1'b1;
+        sctrl_clear    = 1'b0;
+        sctrl_addr     = HADDR;
       end
 	  default:begin
         HRDATA_S4      = 32'd0;
 	    HREADY_S4      = 1'd0;
 	    HRESP_S4       = 2'd0;
-        sctrl_clear    = 1'd0;
-        sctrl_addr     = 32'd0;
+        sctrl_en       = 1'b0;
+        sctrl_clear    = 1'b0;
+        sctrl_addr     = 6'b0;
       end
 	endcase
-  end
-
-  always_comb begin
-    if(Reg0100 != 32'd0)
-      sctrl_en = 1'b1;
-    else
-      sctrl_en = 1'b0;
   end
 
 endmodule
