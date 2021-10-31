@@ -4,14 +4,14 @@ module PC(
   input                                 clk,
   input                                 rst,
   input         [`data_size-1:0]        PC_in_pred,
-  input			[`data_size-1:0]		flag_mepc,
+  input		[`data_size-1:0]	flag_mepc,
   input                                 jump_sel,
   input                                 taken_sel,
   input                                 Istall,
   input                                 Dstall,
-  input									wfi_stall,
-  input									interrupt,
-  input									mret,
+  input					wfi_stall,
+  input					interrupt,
+  input					mret,
   //  input                                 hit,
 
   output logic  [`data_size-1:0]        PC_address,
@@ -19,7 +19,7 @@ module PC(
 );
 
   logic [`data_size-1:0]		PC_address_tmp;
-  logic							flag_stall;
+  logic		 			flag_stall;
 
 
   assign flag_stall = Istall || Dstall || wfi_stall;
