@@ -11,6 +11,7 @@ module RegFile(
   input                                 RF_read,
   input                                 Istall,
   input                                 Dstall,
+  input									wfi_stall,
 
   output logic  [`data_size-1:0]        Read_data_1,
   output logic  [`data_size-1:0]        Read_data_2
@@ -21,7 +22,7 @@ module RegFile(
   integer                               i;
 
 
-  assign flag_stall = Istall || Dstall;
+  assign flag_stall = Istall || Dstall || wfi_stall;
 
   always_ff@(posedge clk, posedge rst)begin
     if(rst)begin

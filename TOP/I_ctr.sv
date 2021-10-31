@@ -8,6 +8,7 @@ module I_ctr(
   input                                 ready,
   input                                 hit,
   input                                 stall_Dcount,
+  input									wfi_stall,
 
   output logic                          CS_tag,
   output logic                          OE_tag,
@@ -25,16 +26,19 @@ module I_ctr(
   logic     [2:0]                       cstate;
   logic     [2:0]                       nstate;
   logic     [1:0]                       counter;
+  logic									flag_stall;
   logic     [63:0]                      L1I_access;
   logic     [63:0]                      L1I_miss;
 
+
+  assign 	flag_stall = stall_Dcount || wfi_stall;
 
   always_ff@(posedge clk, posedge rst)begin
     if(rst)
       counter <= 2'b0;
     else if((cstate == IDLE)||((counter == 2'b11) && ready))
       counter <= 2'b0;
-    else if((cstate == COUNT)&& ready && (!stall_Dcount))
+    else if((cstate == COUNT)&& ready && (!flag_stall))
       counter <= counter + 1;
   end
 

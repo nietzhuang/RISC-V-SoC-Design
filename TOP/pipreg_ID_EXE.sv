@@ -24,6 +24,7 @@ module pipreg_ID_EXE(
     input                                   csr_result_sel,
     input                                   Istall,
     input                                   Dstall,
+	input									wfi_stall,
     input                                   flush,
     input                                   flush_jalr,
 
@@ -54,7 +55,7 @@ module pipreg_ID_EXE(
   logic                                     flag_flush;
 
 
-  assign flag_stall = Istall || Dstall;
+  assign flag_stall = Istall || Dstall || wfi_stall;
   assign flag_flush = flush || flush_jalr;
 
   always_ff@(posedge clk, posedge rst)begin

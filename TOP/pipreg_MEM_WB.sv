@@ -10,6 +10,7 @@ module pipreg_MEM_WB(
   input         [2:0]                   WB_ctr_EXE_MEM,
   input                                 Istall,
   input                                 Dstall,
+  input									wfi_stall,
 
   output logic  [`data_size-1:0]        PC_added_WB,
   output logic  [4:0]                   write_addr,
@@ -23,7 +24,7 @@ module pipreg_MEM_WB(
   logic                                 flag_stall;
 
 
-  assign flag_stall = Istall || Dstall;
+  assign flag_stall = Istall || Dstall || wfi_stall;
 
   always_ff@(posedge clk, posedge rst)begin
     if(rst)begin

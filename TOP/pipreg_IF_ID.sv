@@ -9,6 +9,7 @@ module pipreg_IF_ID(
   input         [`data_size-1:0]        Icache_out,
   input                                 Istall,
   input                                 Dstall,
+  input									wfi_stall,
   input                                 flush,
   input                                 flush_jalr,
 
@@ -24,7 +25,7 @@ module pipreg_IF_ID(
   logic                                 flag_stall;
   logic                                 flag_flush;
 
-  assign flag_stall  = Istall || Dstall;
+  assign flag_stall  = Istall || Dstall || wfi_stall;
   assign flag_flush  = flush || flush_jalr;
 
   always_ff@(posedge clk, posedge rst)begin

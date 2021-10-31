@@ -11,6 +11,7 @@ module Icache(
   input                                 Icache_en,
   input                                 ready,
   input                                 stall_Dcount,
+  input									wfi_stall,
   input         [`data_size-1:0]        DataIn,
 
   output logic  [`data_size-1:0]        DataOut,
@@ -47,7 +48,7 @@ module Icache(
         .CK(clk),
         .A(address[9:4]),
         .DO(tag),
-        .DI(address[31:10]),
+        .DI(address[3:10]),
         .WEB(WEB_tag),
         .OE(OE_tag),
         .CS(CS_tag)
@@ -130,6 +131,7 @@ module Icache(
         .ready(ready),
         .hit(hit),
         .stall_Dcount(stall_Dcount),
+		.wfi_stall(wfi_stall),
 
         .CS_tag(CS_tag),
         .OE_tag(OE_tag),

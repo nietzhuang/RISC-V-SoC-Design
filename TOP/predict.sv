@@ -7,6 +7,7 @@ module predict(
   input                     jump_sel,
   input                     Istall,
   input                     Dstall,
+  input						wfi_stall,
 
   output logic              taken_sel
 );
@@ -18,7 +19,7 @@ module predict(
   logic [1:0]               nstate;
 
 
-  assign flag_stall = Istall || Dstall;
+  assign flag_stall = Istall || Dstall || wfi_stall;
 
   always_ff@(posedge clk, posedge rst)begin
     if(rst)

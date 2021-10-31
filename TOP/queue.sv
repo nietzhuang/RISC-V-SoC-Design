@@ -12,17 +12,18 @@ module queue(
   input                                 taken_sel,
   input                                 Istall,
   input                                 Dstall,
+  input									wfi_stall,
 
   output logic  [`data_size-1:0]        PC_imm,
   output logic  [`data_size-1:0]        PC_imm_que
  );
 
   logic     [`data_size-1:0]            imm_que;
-  logic     [`data_size-1:0]            slots; // register
+  logic     [`data_size-1:0]            slots;  // register
   logic                                 flag_stall;
 
 
-  assign flag_stall = Istall || Dstall;
+  assign flag_stall = Istall || Dstall || wfi_stall;
 
   always_comb begin
     if(taken_sel)

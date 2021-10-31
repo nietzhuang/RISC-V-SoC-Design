@@ -164,6 +164,7 @@ module CPU(
   logic                                     flush;
   logic                                     flush_jalr;
   logic                                     stall_Dcount;
+  logic										wfi_stall;
   // Other select signals.
   logic [1:0]                               rs_sel;
   logic [1:0]                               rt_sel;
@@ -177,24 +178,29 @@ module CPU(
   logic                                     taken_sel;
   logic                                     D_in_sel;
   logic                                     asipc_sel;
-  logic                                     csr_imm_sel;
-  logic                                     csr_imm_sel_EXE;
+  logic [1:0]                               csr_imm_sel;
+  logic [1:0]                               csr_imm_sel_EXE;
   logic                                     csr_data_sel;
   logic                                     csr_result_sel;
   logic                                     csr_result_sel_EXE;
   logic                                     sw_data_sel;
   logic                                     asipc_sel_ID_EXE;
+  logic										flag_mret;
 
 
   PC PC(
         .clk(clk),
         .rst(rst),
         .PC_in_pred(PC_in_pred),
+		.mepc(csr_read_data),
         .jump_sel(jump_sel),
         .taken_sel(taken_sel),
         .Istall(Istall),
         .Dstall(Dstall),
-        .hit(hit),
+		.wfi_stall(wfi_stall),
+		.interrupt(interrupt),
+		.flag_mret(flag_mret),
+//        .hit(hit),
 
         .PC_address(PC_address),
         .Icache_en(Icache_en)
@@ -217,6 +223,7 @@ module CPU(
         .Icache_out(Icache_out),  // Instruction read from icache.
         .Istall(Istall),
         .Dstall(Dstall),
+		.wfi_stall(wfi_stall),
         .flush(flush),
         .flush_jalr(flush_jalr),
 
@@ -253,6 +260,7 @@ module CPU(
         .csr_result_sel(csr_result_sel),
         .Istall(Istall),
         .Dstall(Dstall),
+		.wfi_stall(wfi_stall),
         .flush(flush),
         .flush_jalr(flush_jalr),
 
@@ -293,6 +301,7 @@ module CPU(
         .WB_ctr_ID_EXE(WB_ctr_ID_EXE),
         .Istall(Istall),
         .Dstall(Dstall),
+		.wfi_stall(wfi_stall),
 
         .PC_added_MEM(PC_added_MEM),
         .Read_addr_2_MEM(Read_addr_2_MEM),
@@ -317,6 +326,7 @@ module CPU(
         .WB_ctr_EXE_MEM(WB_ctr_EXE_MEM),
         .Istall(Istall),
         .Dstall(Dstall),
+		.wfi_stall(wfi_stall),
 
         .PC_added_WB(PC_added_WB),
         .write_addr(write_addr),
@@ -367,7 +377,9 @@ module CPU(
         .utype_sel(utype_sel),
         .asipc_sel(asipc_sel),
         .csr_imm_sel(csr_imm_sel),
-        .csr_result_sel(csr_result_sel)
+        .csr_result_sel(csr_result_sel),
+		.wfi_stall(wfi_stall),
+		.flag_mret(flag_mret)
         );
 
   RegFile RF(
@@ -382,7 +394,8 @@ module CPU(
         .RF_write(RF_write_WB),
         .RF_read(RF_read),
         .Istall(Istall),
-        .Dstall(Dstall)
+        .Dstall(Dstall),
+		.wfi_stall(wfi_stall)
         );
 
   CSR CSR(  // Considering data hazard, it should write at EXE statge.
@@ -399,6 +412,7 @@ module CPU(
         .csr_data_sel(csr_data_sel),
         .Istall(Istall),
         .Dstall(Dstall),
+		//.wfi_stall(wfi_stall),
         .csr_read_data(csr_read_data),
         .interrupt(interrupt)
         );
@@ -472,6 +486,7 @@ module CPU(
   mux_csr_imm mux_csr_imm(
         .src1(src1),
         .imm_EXE(imm_EXE),
+		.PC_added_EXE(PC_added_EXE),
         .csr_imm_sel_EXE(csr_imm_sel_EXE),
 
         .csr_write_tmp(csr_write_tmp)
@@ -525,6 +540,7 @@ module CPU(
         .taken_sel(taken_sel),
         .Istall(Istall),
         .Dstall(Dstall),
+		.wfi_stall(wfi_stall),
 
         .PC_imm(PC_imm),
         .PC_imm_que(PC_imm_que)
@@ -537,6 +553,7 @@ module CPU(
         .jump_sel(jump_sel),
         .Istall(Istall),
         .Dstall(Dstall),
+		.wfi_stall(wfi_stall),
         .taken_sel(taken_sel)
         );
 
@@ -578,6 +595,7 @@ module CPU(
         .Icache_en(Icache_en),
         .ready(ready),  // from Master wrapper.
         .stall_Dcount(stall_Dcount),
+		.wfi_stall(wfi_stall),
         .DataIn(IM_out),
 
         .IM_enable(IM_enable),
@@ -590,7 +608,7 @@ module CPU(
         .L1I_miss(L1I_miss)
         );
 
-  Dcache Dcache(
+  Dcache Dcache(  //!!!  Maybe it needs wfi_stall.
         .clk(clk),
         .rst(rst),
         .address(D_address),  // wire to alu_result

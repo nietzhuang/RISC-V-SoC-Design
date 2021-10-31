@@ -76,7 +76,7 @@ module Dcache(
         .DI(Dcache_in_DI), //Dcache_in or DM_out
         .WEB(WEB_data),
         .OE(OE_data),
-        .CS(CS_data[1])
+		.CS(CS_data[1])
         );
 
   data_array d_array2(

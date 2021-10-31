@@ -14,6 +14,7 @@ module pipreg_EXE_MEM(
   input         [2:0]                   WB_ctr_ID_EXE,
   input                                 Istall,
   input                                 Dstall,
+  input 								wfi_stall,
 
   output logic  [`data_size-1:0]        PC_added_MEM,
   output logic  [4:0]                   Read_addr_2_MEM,
@@ -31,7 +32,7 @@ module pipreg_EXE_MEM(
   logic                                 flag_stall;
 
 
-  assign flag_stall = Istall || Dstall;
+  assign flag_stall = Istall || Dstall || wfi_stall;
 
   always_ff@(posedge clk, posedge rst)begin
     if(rst)begin
